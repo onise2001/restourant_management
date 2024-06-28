@@ -34,8 +34,10 @@ class Kitchen:
 
     def save_dish(self, dish):
 
+
         with open(file=DISH_PATH, mode='a', encoding='utf-8') as file:
             headers = ['name', 'ingredients', 'prep_method', 'price']
+
 
             writer = csv.DictWriter(file, fieldnames=headers)
 

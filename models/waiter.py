@@ -23,6 +23,7 @@ class Waiter:
         from auth.auth import kitchen
         kitchen.current_orders += order
 
+
     
     def check_order_status(self, order):
         return order.status == "Finished"
