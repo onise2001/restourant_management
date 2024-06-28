@@ -1,6 +1,7 @@
 class Order:
     STATUS_CHOICES = (
-        "Not Finished",
+        "Pending",
+        "Preparing",
         "Finished",
     )
 

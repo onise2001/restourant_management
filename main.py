@@ -46,11 +46,27 @@ def main():
         headers = ['table', 'dishes', 'waiter', 'status']
         write_inital_files('./restourant/orders.csv', headers, [])
 
+        headers = ['current_orders']
+        write_inital_files('./restourant/kitchen.csv', headers, [])
+
+
 
 
         
 
     else:
+        
+        
+        
+        # main_menu = {
+        #     'Place an Order':
+        #     'Login':,
+
+        # }
+
+        # for index, (key, value) in enumerate(session.current_user.permissions.items()):
+        #     print(f'{index + 1}. {key}')
+
 
 
 
@@ -60,9 +76,19 @@ def main():
 
 
         user = authenticate_user(username, password)
-        print(session.current_user.user.username)
+        #print(session.current_user.permissions)
+        for index, (key, value) in enumerate(session.current_user.permissions.items()):
+            print(f'{index + 1}. {key}')
+
+
+        choice = input("Choose option: ")
+
+
+        session.current_user.permissions[list(session.current_user.permissions.keys())[int(choice) - 1]]()
+
+
      
-        print(type(session.current_user))
+        #print(type(session.current_user))
 
 
 

@@ -1,4 +1,4 @@
-from dish import Dish
+from .dish import Dish
 class Chef:
 
     def __init__(self, user):
