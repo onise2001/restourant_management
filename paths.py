@@ -5,7 +5,6 @@ from pathlib import Path
 
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-
 base_dir = os.path.abspath(current_dir)
 
 

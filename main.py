@@ -36,8 +36,6 @@ def main():
 
     else:
 
-
-
         print('please login')
         username = input("Username: ")
         password = input('Password: ')
@@ -49,7 +47,9 @@ def main():
         print(type(session.current_user))
 
 
+        session.current_user.add_user_to_database()
 
+        print(session.current_user.permissions)
 
 
 

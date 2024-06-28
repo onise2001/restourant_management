@@ -22,6 +22,7 @@ import csv
 class Admin:
     def __init__(self, user):
             self.user = user
+            self.permissions = ['Warehouse Management', 'Waiters Management']
 
 
         
