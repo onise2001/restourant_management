@@ -1,5 +1,4 @@
 import csv, os
-from admin import Admin
 from models.user import User
 from models.table import Table
 from write_func import write_inital_files
@@ -16,6 +15,8 @@ def main():
 
         password = hash_password(password)
         user = User(username=username, password=password, email=email, role=role)
+
+        
 
         headers = ['username', 'password', 'email', 'role']
 
@@ -43,14 +44,9 @@ def main():
 
 
         user = authenticate_user(username, password)
-
-
-        print(session.current_user.username)
-
-
-        admin = Admin(user)
-
-        admin.add_user_to_database()
+        print(session.current_user.user.username)
+     
+        print(type(session.current_user))
 
 
 

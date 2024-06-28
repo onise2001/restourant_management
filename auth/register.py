@@ -1,5 +1,4 @@
 import re
-
 from models.user import ROLE_CHOICES, User
 from .auth import get_user, hash_password
 
@@ -46,7 +45,7 @@ def check_email_valid(email):
         return False
 
 
-def get_user_info(self,):
+def get_user_info():
     while True:
         username = input("Username: ").strip().lower()
 

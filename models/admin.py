@@ -1,8 +1,7 @@
-from auth.auth import get_user, hash_password
-from auth.register import check_password_strength, check_email_valid
-from models.user import ROLE_CHOICES, User
 from paths import USERS_PATH
 import csv
+
+
 # def input_password():
 #     password = input("Passwrod: ").strip().lower()
 #     if not check_password_strength(password):
@@ -27,7 +26,9 @@ class Admin:
 
         
     def add_user_to_database(self):
-        user = self.get_user_info()
+        from auth.register import get_user_info
+
+        user = get_user_info()
 
         if user:
             with open(file=USERS_PATH, mode='a', encoding='utf-8') as file:
