@@ -1,5 +1,5 @@
 from .order import Order
-from .kitchen import kitchen
+from .kitchen import Kitchen 
 
 class Waiter:
     def __init__(self, user):
@@ -19,6 +19,7 @@ class Waiter:
         return order
     
     def add_to_kitchen(self, order):
+        kitchen = Kitchen()
         kitchen.current_ordes += order
 
     
