@@ -1,3 +1,4 @@
+from models.kitchen import Kitchen
 from models.user import User
 from paths import USERS_PATH
 import bcrypt
@@ -5,6 +6,8 @@ import csv
 from auth.session import Session
 
 session = Session()
+kitchen = Kitchen()
+
 
 def hash_password(password):
     salt = bcrypt.gensalt()

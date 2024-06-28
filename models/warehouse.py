@@ -1,17 +1,17 @@
-import csv, os
+import csv
+from paths import KITCHEN_PATH
 from .product import Product
-
 
 class Warehouse:
     def __init__(self):
         self.products = []
-        if os.path.isdir('../restourant'):
-            with open('../restourant/kitchen.csv', mode='r') as file:
-                
-                reader = csv.DictReader(file)
-                for line in reader:
-                    old_order = Product(name=line['name'],price=line['price'], current_quantity=line['current_quantity'],timestamp=line['timestamp'], days=line['days'])
-                    self.products.append(old_order)
+        with open(file=KITCHEN_PATH, mode='r') as file:
+            
+            reader = csv.DictReader(file)
+            for line in reader:
+                old_order = Product(name=line['name'],price=line['price'], current_quantity=line['current_quantity'],timestamp=line['timestamp'], days=line['days'])
+                self.products.append(old_order)
+
 
 
     def add_product(self, product):

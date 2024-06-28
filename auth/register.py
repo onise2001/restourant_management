@@ -2,6 +2,7 @@ import re
 from models.user import ROLE_CHOICES, User
 from .auth import get_user, hash_password
 
+
 def check_password_strength(password):
     length_regex = r'.{8,}'  # At least 8 characters long
     uppercase_regex = r'[A-Z]'  # At least one uppercase letter
@@ -79,7 +80,7 @@ def get_user_info():
             print("Invalid Role")
             break
         password = hash_password(password)
-        user = User(username, email, password, role)
+        user = User(username=username, email=email, password=password, role=role)
         
         return user
     return None
