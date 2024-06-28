@@ -1,4 +1,5 @@
 import csv, os
+from admin import Admin
 from models.user import User
 from models.table import Table
 from write_func import write_inital_files
@@ -33,13 +34,23 @@ def main():
             write_inital_files('./restourant/tables.csv', headers, new_tables )
 
     else:
+
+
+
         print('please login')
         username = input("Username: ")
         password = input('Password: ')
-        authenticate_user(username, password)
+
+
+        user = authenticate_user(username, password)
 
 
         print(session.current_user.username)
+
+
+        admin = Admin(user)
+
+        admin.add_user_to_database()
 
 
 

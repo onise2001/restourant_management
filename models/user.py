@@ -1,11 +1,13 @@
+ROLE_CHOICES = (
+    "Admin",
+    "Chef",
+    "Accoutant",
+    "Waiter",
+    "Warehouse Worker",
+)
+
 class User:
-    ROLE_CHOICES = (
-        "Admin",
-        "Chef",
-        "Accoutant",
-        "Waiter",
-        "Warehouse Worker",
-    )
+
 
 
     def __init__(self,username,password,email, role):
@@ -22,7 +24,7 @@ class User:
     
     @role.setter
     def role(self,role):
-        if role in self.ROLE_CHOICES:
+        if role in ROLE_CHOICES:
             self._role = role
             return role
         raise ValueError("No such role")
