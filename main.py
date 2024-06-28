@@ -2,7 +2,7 @@ import csv, os
 from models.user import User
 from models.table import Table
 from write_func import write_inital_files
-from auth import hash_password, authenticate_user, session
+from auth.auth import hash_password, authenticate_user, session
 
 def main():
     if not os.path.isdir('./restourant'):
@@ -39,7 +39,7 @@ def main():
         authenticate_user(username, password)
 
 
-        
+        print(session.current_user.username)
 
 
 

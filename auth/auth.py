@@ -2,7 +2,7 @@ from models.user import User
 from paths import USERS_PATH
 import bcrypt
 import csv
-from session import Session
+from auth.session import Session
 
 session = Session()
 
@@ -28,12 +28,10 @@ def authenticate_user(username, password):
 
 
     if bcrypt.checkpw(password, saved_password):
-        f_user = User(**user)
-        print(isinstance(f_user, User))
-        print(f_user)
-        session.current_user = f_user
-        
-        return f_user
+        logged_in_user = User(**user)
+        print(isinstance(logged_in_user, User))
+        session.current_user = logged_in_user
+        return logged_in_user
     else:
         print('WRONG CREDENTIALS')
         return None
