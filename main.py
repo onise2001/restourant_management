@@ -2,6 +2,7 @@ import csv, os
 from models.user import User
 from models.table import Table
 from models.warehouse import Warehouse
+from models.kitchen import Kitchen
 from write_func import write_inital_files
 from auth.auth import hash_password, authenticate_user, session
 
@@ -52,43 +53,60 @@ def main():
 
 
 
+
+
         
 
     else:
         
         
         
-        # main_menu = {
-        #     'Place an Order':
-        #     'Login':,
+        main_menu = [
+            'Place an Order',
+            'Login'
 
-        # }
+        ]
 
-        # for index, (key, value) in enumerate(session.current_user.permissions.items()):
-        #     print(f'{index + 1}. {key}')
+        for index, value in enumerate(main_menu):
+            print(f'{index + 1}. {value}')
 
-
-
-
-        print('please login')
-        username = input("Username: ")
-        password = input('Password: ')
-
-
-        user = authenticate_user(username, password)
-        #print(session.current_user.permissions)
-        for index, (key, value) in enumerate(session.current_user.permissions.items()):
-            print(f'{index + 1}. {key}')
-
-
+        
+        
         choice = input("Choose option: ")
+        
+        if choice == '1':
+            ...
+        
+        elif choice == '2':
+
+            user = login()
+            if user:
+                while True:
+                    #print(session.current_user.permissions)
+                    for index, (key, value) in enumerate(session.current_user.permissions.items()):
+                        print(f'{index + 1}. {key}')
+        
+        
+                    choice = input("Choose option: ")
+        
+        
+                    session.current_user.permissions[list(session.current_user.permissions.keys())[int(choice) - 1]]()
+        
+        
+             
+                    #print(type(session.current_user))
+    
 
 
-        session.current_user.permissions[list(session.current_user.permissions.keys())[int(choice) - 1]]()
 
+def login():
+    username = input("Username: ")
+    password = input('Password: ')
 
-     
-        #print(type(session.current_user))
+    user = authenticate_user(username, password)
+    return user
+        
+
 
 
 
