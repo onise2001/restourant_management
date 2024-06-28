@@ -1,3 +1,4 @@
+from dish import Dish
 class Chef:
 
     def __init__(self, user):
@@ -20,6 +21,11 @@ class Chef:
     def prepare_order_item(self, item):
         item.status = "Finished"
         return item
+    
+
+    def create_dish(self,name, ingredients,  prep_method, price):
+        new_dish = Dish(name=name,ingredients=ingredients, prep_method=prep_method, price=price)
+        return new_dish
 
 
 
