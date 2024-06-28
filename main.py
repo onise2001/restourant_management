@@ -2,15 +2,18 @@ import csv, os
 from models.user import User
 from models.table import Table
 from write_func import write_inital_files
+from auth import hash_password, authenticate_user, session
 
 def main():
     if not os.path.isdir('./restourant'):
         os.mkdir("./restourant")
         print("You are the first user, please register and set up your restourant.")
-        username = input("Username: ")
-        password = input("Passwrod: ")
-        email = input("Email: ")
+        username = input("Username: ").strip().lower()
+        password = input("Passwrod: ").strip().lower()
+        email = input("Email: ").lower().strip()
         role = "Admin"
+
+        password = hash_password(password)
         user = User(username=username, password=password, email=email, role=role)
 
         headers = ['username', 'password', 'email', 'role']
@@ -29,7 +32,14 @@ def main():
 
             write_inital_files('./restourant/tables.csv', headers, new_tables )
 
+    else:
+        print('please login')
+        username = input("Username: ")
+        password = input('Password: ')
+        authenticate_user(username, password)
 
+
+        
 
 
 
