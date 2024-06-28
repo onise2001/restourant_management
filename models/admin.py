@@ -22,7 +22,6 @@ import csv
 class Admin:
     def __init__(self, user):
             self.user = user
-            self.permissions = ['Warehouse Management', 'Waiters Management']
 
 
         
@@ -46,3 +45,6 @@ class Admin:
             return user
         
         return None
+
+    def add_product_to_warehouse(self):
+         ...

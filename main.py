@@ -1,6 +1,7 @@
 import csv, os
 from models.user import User
 from models.table import Table
+from models.warehouse import Warehouse
 from write_func import write_inital_files
 from auth.auth import hash_password, authenticate_user, session
 
@@ -33,8 +34,39 @@ def main():
             headers = ['number', 'status']
 
             write_inital_files('./restourant/tables.csv', headers, new_tables )
+        
+        warehouse = Warehouse()
+        headers = ['name', 'price', 'current_quantity']
+        write_inital_files('./restourant/warehouse.csv', headers, warehouse.products)
+
+
+        headers = ['name', 'ingredients', 'prep_method', 'price']
+        write_inital_files('./restourant/dishes.csv', headers, [])
+
+        headers = ['table', 'dishes', 'waiter', 'status']
+        write_inital_files('./restourant/orders.csv', headers, [])
+
+        headers = ['current_orders']
+        write_inital_files('./restourant/kitchen.csv', headers, [])
+
+
+
+
+        
 
     else:
+        
+        
+        
+        # main_menu = {
+        #     'Place an Order':
+        #     'Login':,
+
+        # }
+
+        # for index, (key, value) in enumerate(session.current_user.permissions.items()):
+        #     print(f'{index + 1}. {key}')
+
 
         print('please login')
         username = input("Username: ")
@@ -42,9 +74,19 @@ def main():
 
 
         user = authenticate_user(username, password)
-        print(session.current_user.user.username)
+        #print(session.current_user.permissions)
+        for index, (key, value) in enumerate(session.current_user.permissions.items()):
+            print(f'{index + 1}. {key}')
+
+
+        choice = input("Choose option: ")
+
+
+        session.current_user.permissions[list(session.current_user.permissions.keys())[int(choice) - 1]]()
+
+
      
-        print(type(session.current_user))
+        #print(type(session.current_user))
 
 
         session.current_user.add_user_to_database()
