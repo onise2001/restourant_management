@@ -22,6 +22,7 @@ from .warehouse import Warehouse
 
 class Admin:
     def __init__(self, user):
+
             self.user = user
             self.permissions = {'Add User': self.add_user_to_database, 'Add Products to Warehouse': self.add_product_to_warehouse}
             
