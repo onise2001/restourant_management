@@ -1,9 +1,11 @@
 import csv
+from paths import KITCHEN_PATH
 from .product import Product
+
 class Warehouse:
     def __init__(self):
         self.products = []
-        with open(file = '../restourant/kitchen.csv', mode='r') as file:
+        with open(file=KITCHEN_PATH, mode='r') as file:
             
             reader = csv.DictReader(file)
             for line in reader:

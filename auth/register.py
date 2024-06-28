@@ -80,7 +80,7 @@ def get_user_info():
             print("Invalid Role")
             break
         password = hash_password(password)
-        user = User(username, email, password, role)
+        user = User(username=username, email=email, password=password, role=role)
         
         return user
     return None

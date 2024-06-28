@@ -21,7 +21,8 @@ import csv
 
 class Admin:
     def __init__(self, user):
-            self.user = user
+        self.user = user
+        self.permissions = {'Add User': self.add_user_to_database}
 
 
         

@@ -1,7 +1,6 @@
 import csv, os
 from models.user import User
 from models.table import Table
-from models.warehouse import Warehouse
 from write_func import write_inital_files
 from auth.auth import hash_password, authenticate_user, session
 
@@ -33,11 +32,10 @@ def main():
 
             headers = ['number', 'status']
 
-            write_inital_files('./restourant/tables.csv', headers, new_tables )
+            write_inital_files('./restourant/tables.csv', headers, new_tables)
         
-        warehouse = Warehouse()
         headers = ['name', 'price', 'current_quantity']
-        write_inital_files('./restourant/warehouse.csv', headers, warehouse.products)
+        write_inital_files('./restourant/warehouse.csv', headers, [])
 
 
         headers = ['name', 'ingredients', 'prep_method', 'price']
