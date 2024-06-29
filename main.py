@@ -45,6 +45,9 @@ def main():
         headers = ['table', 'dishes', 'waiter', 'status']
         write_inital_files('./restourant/orders.csv', headers, [])
 
+        headers = ['id', 'order', 'dish', 'status']
+        write_inital_files('./restourant/orders-items.csv', headers, [])
+
         headers = ['current_orders']
         write_inital_files('./restourant/kitchen.csv', headers, [])
         
@@ -60,26 +63,14 @@ def main():
 
         user = authenticate_user(username, password)
         kitchen.fill_the_kitchen()
+        
         print(kitchen.current_orders)
 
         #print(session.current_user.permissions)
         for index, (key, value) in enumerate(session.current_user.permissions.items()):
-            print(f'{index + 1}. {key}')
-
-
-        
-        
-        choice = input("Choose option: ")
-        
+            print(f'{index + 1}. {key}')        
       
-        
 
-           
-           
-               
-        #print(session.current_user.permissions)
-        for index, (key, value) in enumerate(session.current_user.permissions.items()):
-            print(f'{index + 1}. {key}')
 
 
         choice = input("Choose option: ")
@@ -90,9 +81,6 @@ def main():
 
     
         #print(type(session.current_user))
-
-
-
 
         print(session.current_user.permissions)
 

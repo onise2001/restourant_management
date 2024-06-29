@@ -1,5 +1,6 @@
 import csv
-from paths import DISH_PATH, ORDER_PATH, TABLES_PATH
+from models.order_item import OrderItem
+from paths import DISH_PATH, ORDER_ITEM_PATH, ORDER_PATH, TABLES_PATH
 from .order import Order
 
 
@@ -19,8 +20,9 @@ class Waiter:
     def get_dish_names(self):
         from models.dish import Dish
         dishes = []
+
         while True:
-            dish_name = input('Dish Names')
+            dish_name = input('Dish Name>>>')
             print('When you finish input 1')
 
             if dish_name == '1':
@@ -67,10 +69,13 @@ class Waiter:
         waiter = self.user
 
         if dishes and table_id:
-
+            orderitems = []
             dishes_names = [dish.name for dish in dishes]
 
-            order = Order(table=table_id, orderitems=dishes, waiter=waiter)
+            order = Order(table=table_id, orderitems=[], waiter=waiter)
+            orderitems = [OrderItem(dish=dish, order=order) for dish in dishes_names]
+  
+            order.orderitems = orderitems
             self.orders.append(order)
 
             with open(file=ORDER_PATH, mode='a', encoding='utf-8') as file:
@@ -85,7 +90,23 @@ class Waiter:
                     'status': order.status
                 })
 
+
+        with open(ORDER_ITEM_PATH, 'a') as file:
+            headers = ['id', 'order', 'dish', 'status']
+
+            writer = csv.DictWriter(file, fieldnames=headers)
+            
+            for order_item in orderitems:
+                writer.writerow({
+                    'id': order_item.id,
+                    'order': order_item.order,
+                    'dish': order_item.dish,
+                    'status': order_item.status
+                })
+
             return order
+        
+
 
     
     def add_to_kitchen(self, order):
