@@ -1,7 +1,7 @@
 import csv
 from paths import ORDER_ITEM_PATH
 from .dish import Dish
-
+from update_func import update_value_in_csv
 
 class Chef:
 
@@ -49,18 +49,17 @@ class Chef:
             for order_item in order.orderitems:
                 if order_item.id == item_id:
                     order_item.status = 'Done'
-                    with open(ORDER_ITEM_PATH, 'r') as file:
-                        reader = csv.DictReader(file)
-                        for row in reader:
-                            if int(row['id']) == int(order_item.id):
-                                row['status'] = 'Done'
-                            rows.append(row)
+                
 
-                    with open(ORDER_ITEM_PATH, 'w', newline='') as file:
-                        fieldnames = rows[0].keys()
-                        writer = csv.DictWriter(file, fieldnames=fieldnames)
-                        writer.writeheader()
-                        writer.writerows(rows)
+                    update_value_in_csv(
+                        identifier=str(order_item.id), 
+                        identifier_column='id', 
+                        value='Done', 
+                        value_column='status', 
+                        path=ORDER_ITEM_PATH
+                    )
+
+
                             
 
         return 

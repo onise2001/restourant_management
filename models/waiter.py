@@ -73,7 +73,7 @@ class Waiter:
             dishes_names = [dish.name for dish in dishes]
 
             order = Order(table=table_id, orderitems=[], waiter=waiter)
-            orderitems = [OrderItem(dish=dish, order=order) for dish in dishes_names]
+            orderitems = [OrderItem(dish=dish, order_table=order.table) for dish in dishes_names]
   
             order.orderitems = orderitems
             self.orders.append(order)
@@ -99,7 +99,7 @@ class Waiter:
             for order_item in orderitems:
                 writer.writerow({
                     'id': order_item.id,
-                    'order': order_item.order,
+                    'order': order_item.order_table,
                     'dish': order_item.dish,
                     'status': order_item.status
                 })
