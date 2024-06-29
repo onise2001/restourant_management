@@ -40,7 +40,7 @@ def main():
         write_inital_files('./restourant/warehouse.csv', headers, [])
 
 
-        #eaders = ['debt', 'total_salary', 'salary_percent', 'margin_percent', 'commision_percent',]
+        headers = ['debt', 'total_salary', 'salary_percent', 'margin_percent', 'commision_percent',]
 
 
         headers = ['name', 'ingredients', 'prep_method', 'price']
