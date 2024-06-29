@@ -38,6 +38,8 @@ def main():
         headers = ['name', 'price', 'current_quantity']
         write_inital_files('./restourant/warehouse.csv', headers, [])
 
+        #eaders = ['debt', 'total_salary', 'salary_percent', 'margin_percent', 'commision_percent',]
+
 
         headers = ['name', 'ingredients', 'prep_method', 'price']
         write_inital_files('./restourant/dishes.csv', headers, [])
@@ -105,13 +107,6 @@ def login():
     user = authenticate_user(username, password)
     return user
         
-
-
-
-        session.current_user.add_user_to_database()
-
-        print(session.current_user.permissions)
-
 
 
 if __name__ == "__main__":

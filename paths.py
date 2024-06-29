@@ -12,5 +12,6 @@ USERS_PATH = Path(f'{base_dir}/restourant/users.csv')
 TABLES_PATH = Path(f'{base_dir}/restourant/tables.csv')
 KITCHEN_PATH = Path(f'{base_dir}/restourant/kitchen.csv')
 DISH_PATH = Path(f'{base_dir}/restourant/dish.csv')
+WAREHOUSER_PATH = Path(f'{base_dir}/restourant/warehouse.csv')
 
 
