@@ -38,6 +38,10 @@ def main():
         headers = ['name', 'price', 'current_quantity']
         write_inital_files('./restourant/warehouse.csv', headers, [])
 
+
+        #eaders = ['debt', 'total_salary', 'salary_percent', 'margin_percent', 'commision_percent',]
+
+
         headers = ['name', 'ingredients', 'prep_method', 'price']
         write_inital_files('./restourant/dishes.csv', headers, [])
 
@@ -71,6 +75,7 @@ def main():
         session.current_user.permissions[list(session.current_user.permissions.keys())[int(choice) - 1]]()
 
         #print(type(session.current_user))
+
 
 
 
