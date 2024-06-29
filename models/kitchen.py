@@ -3,7 +3,7 @@ import csv
 import os
 from models.dish import Dish
 from models.order_item import OrderItem
-from paths import DISH_PATH, KITCHEN_PATH, ORDER_ITEM_PATH, ORDER_PATH
+from paths import DISH_PATH, KITCHEN_PATH, ORDER_ITEM_PATH, ORDER_PATH, WAREHOUSE_PATH
 from .order import Order
 
 
@@ -68,6 +68,14 @@ class Kitchen:
                 print(old_order.table, old_order.orderitems)
 
                 self.current_orders.append(old_order)
+            return
         
+    def check_ingredient_in_database(self, ingredient):
+        with open(WAREHOUSE_PATH, 'r') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                if row['name'] == ingredient:
+                    return True
             
-        
+        return False
+    

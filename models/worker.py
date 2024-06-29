@@ -6,7 +6,6 @@ class WarehouseWorker:
     def __init__(self):
         self.warehouse = Warehouse()
 
-
     
     def check_products(self):
         for index, product in enumerate(self.warehouse.products):

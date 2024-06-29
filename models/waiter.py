@@ -115,8 +115,8 @@ class Waiter:
 
     
     def check_orders(self):
-        from auth.auth import kitchen, session
-        orders = kitchen.current_orders
+        from auth.auth import session
+        orders = session.kitchen.current_orders
 
         available_orders = []
 
