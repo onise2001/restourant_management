@@ -13,6 +13,7 @@ class Warehouse:
                 self.products.append(old_order)
 
 
+
     def add_product(self, product):
         #if product.name in [my_product.name for my_product in self.products]:
         
@@ -25,13 +26,12 @@ class Warehouse:
         return self.products
     
     def write_products(self):
-        with open('../restourant/warehouse.csv', mode='w') as file:
+        with open('restourant/warehouse.csv', mode='w') as file:
             writer = csv.DictWriter(f=file,fieldnames=['name', 'price', 'current_quantity', 'timestamp', 'days'])
             writer.writeheader()
-            writer.writerows(self.products)
+            writer.writerows([{'name': product.name, 'price':product.price, 'current_quantity': product.current_quantity, 'timestamp': product.timestamp, 'days': product.days} for product in self.products])
     
     
 
 
-warehouse = Warehouse()
     

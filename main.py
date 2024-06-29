@@ -1,6 +1,7 @@
 import csv, os
 from models.user import User
 from models.table import Table
+
 from write_func import write_inital_files
 from auth.auth import hash_password, authenticate_user, session
 from auth.auth import kitchen
@@ -66,10 +67,32 @@ def main():
             print(f'{index + 1}. {key}')
 
 
+        
+        
+        choice = input("Choose option: ")
+        
+      
+        
+
+           
+           
+               
+        #print(session.current_user.permissions)
+        for index, (key, value) in enumerate(session.current_user.permissions.items()):
+            print(f'{index + 1}. {key}')
+
+
         choice = input("Choose option: ")
 
 
         session.current_user.permissions[list(session.current_user.permissions.keys())[int(choice) - 1]]()
+
+
+    
+        #print(type(session.current_user))
+
+
+
 
         print(session.current_user.permissions)
 

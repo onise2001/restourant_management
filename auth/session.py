@@ -1,6 +1,5 @@
 from models.user import User
 
-
 from .permissions import role_mapping
 
 class Session:
