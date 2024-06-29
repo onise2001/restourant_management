@@ -3,6 +3,7 @@ from paths import ORDER_ITEM_PATH
 from .dish import Dish
 from update_func import update_value_in_csv
 
+
 class Chef:
 
     def __init__(self, user):
@@ -31,8 +32,8 @@ class Chef:
         raise ValueError("This user is not a chef")
     
     def get_order_item(self):
-        from auth.auth import kitchen
-        kitchen.display_all_order_status()
+        from auth.auth import session
+        session.display_all_order_status()
         item_id = input('Which Order Item would you like to mark as finished? >>> ')
 
     
@@ -41,11 +42,11 @@ class Chef:
     
 
     def prepare_order_item(self):
-        from auth.auth import kitchen
+        from auth.auth import session
         rows = []
         item_id = self.get_order_item()
 
-        for order in kitchen.current_orders:
+        for order in session.kitchen.current_orders:
             for order_item in order.orderitems:
                 if order_item.id == item_id:
                     order_item.status = 'Done'
@@ -66,7 +67,7 @@ class Chef:
     
 
     def create_dish(self):
-        from auth.auth import kitchen
+        from auth.auth import session
 
         ingredients = []
 
@@ -87,7 +88,7 @@ class Chef:
         price = input('Price>>> ')
 
         new_dish = Dish(name=name, ingredients=ingredients, prep_method=prep_method, price=price)
-        kitchen.save_dish(new_dish)
+        session.kitchen.save_dish(new_dish)
         return new_dish
 
 

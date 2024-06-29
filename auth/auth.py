@@ -6,6 +6,10 @@ import csv
 from auth.session import Session
 
 
+session = Session()
+
+
+
 def hash_password(password):
     salt = bcrypt.gensalt()
     password = password.encode('utf-8')

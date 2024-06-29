@@ -30,7 +30,12 @@ class Order:
 
         if done_counter == len(self.orderitems):
             self.status = STATUS_CHOICES[2]
-            update_value_in_csv(value=STATUS_CHOICES[2], identifier=self.table, path=ORDER_PATH, identifier_column='table', value_column='status')
+            update_value_in_csv(
+                value=STATUS_CHOICES[2], 
+                identifier=self.table, 
+                path=ORDER_PATH, 
+                identifier_column='table', 
+                value_column='status')
 
 
         return 
