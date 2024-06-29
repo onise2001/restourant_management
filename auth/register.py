@@ -1,3 +1,4 @@
+import getpass
 import re
 from models.user import ROLE_CHOICES, User
 from .auth import get_user, hash_password
@@ -54,7 +55,7 @@ def get_user_info():
             print('User with this username already exists.')
             break
 
-        password = input("Passwrod: ").strip().lower()
+        password = getpass.getpass("Passwrod: ").strip().lower()
         while True:
             if not check_password_strength(password):
                 print('Passsword is not strong.')

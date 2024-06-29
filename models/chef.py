@@ -76,6 +76,7 @@ class Chef:
 
         print('Please Input Ingredients>>> ')
         print('When you are done, please input 1 ')
+        
 
         while True: 
             ingredient = input('ingredient>>>> ')

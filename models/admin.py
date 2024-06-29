@@ -19,13 +19,13 @@ from .product import Product
 # print(input_password())
 
 from .warehouse import Warehouse
-from auth.session import warehouse
+
 
 class Admin:
     def __init__(self, user):
-            self.user = user
-
-            self.permissions = {'Add User': self.add_user_to_database, 'Add Products to Warehouse': self.warehouse.add_ingredient_to_warehouse}
+        from auth.auth import session
+        self.user = user
+        self.permissions = {'Add User': self.add_user_to_database, 'Add Products to Warehouse': session.warehouse.add_ingredient_to_warehouse}
             
 
 
@@ -52,6 +52,7 @@ class Admin:
         return None
 
     def see_warehouse_balance(self):
-        balance = warehouse.get_balance()
+        from auth.auth import session
+        balance = session.warehouse.get_balance()
         return balance
     
