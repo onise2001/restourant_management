@@ -5,7 +5,9 @@ import bcrypt
 import csv
 from auth.session import Session
 
+
 session = Session()
+
 
 
 def hash_password(password):
@@ -40,3 +42,6 @@ def authenticate_user(username, password):
 
 
 
+
+session = Session()
+kitchen = Kitchen()
