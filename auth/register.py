@@ -79,6 +79,7 @@ def get_user_info():
         if role.title() not in ROLE_CHOICES:
             print("Invalid Role")
             break
+        
         password = hash_password(password)
         user = User(username=username, email=email, password=password, role=role)
         
