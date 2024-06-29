@@ -1,10 +1,14 @@
+from models.kitchen import Kitchen
+from models.warehouse import Warehouse
 from models.user import User
-
 from .permissions import role_mapping
 
 class Session:
     def __init__(self):
         self._current_user = None
+        self.kitchen = Kitchen()
+        self.warehouse = Warehouse()
+    
 
 
     @property

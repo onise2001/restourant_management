@@ -4,11 +4,16 @@ from paths import DISH_PATH, ORDER_ITEM_PATH, ORDER_PATH, TABLES_PATH
 from .order import Order
 
 
+
 class Waiter:
     def __init__(self, user):
         self.user = user
         self.orders = []
-        self.permissions = {'Get Order': self.create_order, 'Add Order to Kitchen' : self.create_order}
+        self.permissions = {
+            'Get Order': self.create_order, 
+            'Add Order to Kitchen' : self.create_order,
+            'Check Orders': self.check_orders
+            }
     
 
     # @user.setter
@@ -109,13 +114,26 @@ class Waiter:
 
 
     
-    def add_to_kitchen(self, order):
-        from auth.auth import kitchen
-        kitchen.current_orders += order
+    def check_orders(self):
+        from auth.auth import kitchen, session
+        orders = kitchen.current_orders
+
+        available_orders = []
+
+        for order in orders:
+            if order.waiter == session.current_user.user.username:
+                for order_item in order.orderitems:
+                    if order_item.status == 'Done':
+                        available_orders.append(order_item)
+
+        for order in available_orders:
+            print(order.dish, order.status)
 
 
     
-    def check_order_status(self, order):
-        return order.status == "Finished"
-    
+
+
+
+
+
          

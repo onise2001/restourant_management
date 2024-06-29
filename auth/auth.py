@@ -6,7 +6,6 @@ import csv
 from auth.session import Session
 
 session = Session()
-kitchen = Kitchen()
 
 
 def hash_password(password):

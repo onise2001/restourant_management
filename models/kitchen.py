@@ -37,12 +37,12 @@ class Kitchen:
                 'price': dish.price
             })
 
-
         return dish
     
     def fill_the_kitchen(self):
         orderitems = []
         orderitem_dict = {}
+
         with open(file=ORDER_ITEM_PATH, mode='r') as file:
             reader = csv.DictReader(file)
             for line in reader:

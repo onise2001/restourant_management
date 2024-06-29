@@ -51,12 +51,13 @@ class Admin:
         return None
 
     def add_product_to_warehouse(self):
-        warehouse = Warehouse()
+        from auth.auth import session
         name = input('Name: ')
         price = input('Price per unit: ')
         quantity = input("Quantity: ")
         days = input("Days to save: ")
 
         product = Product(name=name, price=price, current_quantity=quantity, days=days)
-        warehouse.add_product(product)
-        warehouse.write_products()
+        session.warehouse.add_product(product)
+        session.warehouse.write_products()
+    
