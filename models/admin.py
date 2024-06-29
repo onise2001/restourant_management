@@ -22,9 +22,10 @@ from .warehouse import Warehouse
 
 class Admin:
     def __init__(self, user):
-
             self.user = user
-            self.permissions = {'Add User': self.add_user_to_database, 'Add Products to Warehouse': self.add_product_to_warehouse}
+            self.warehouse = Warehouse()
+
+            self.permissions = {'Add User': self.add_user_to_database, 'Add Products to Warehouse': self.add_product_to_warehouse, 'See current warehouse': self.see_warehouse_balance}
             
 
 
@@ -51,12 +52,17 @@ class Admin:
         return None
 
     def add_product_to_warehouse(self):
-        warehouse = Warehouse()
         name = input('Name: ')
         price = input('Price per unit: ')
         quantity = input("Quantity: ")
         days = input("Days to save: ")
 
         product = Product(name=name, price=price, current_quantity=quantity, days=days)
-        warehouse.add_product(product)
-        warehouse.write_products()
+        self.warehouse.add_product(product)
+        self.warehouse.write_products()
+
+    def see_warehouse_balance(self):
+        balance = self.warehouse.get_balance()
+        print(balance)
+        return balance
+         
