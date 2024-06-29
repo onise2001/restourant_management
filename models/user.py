@@ -9,7 +9,6 @@ ROLE_CHOICES = (
 
 
 class User:
-
     def __init__(self,username,password,email, role):
         self.username = username
         self.password = password
@@ -24,7 +23,7 @@ class User:
 
     
     @role.setter
-    def role(self,role):
+    def role(self, role):
         if role in ROLE_CHOICES:
             self._role = role
             return role

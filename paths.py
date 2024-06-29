@@ -11,7 +11,9 @@ base_dir = os.path.abspath(current_dir)
 USERS_PATH = Path(f'{base_dir}/restourant/users.csv')
 TABLES_PATH = Path(f'{base_dir}/restourant/tables.csv')
 KITCHEN_PATH = Path(f'{base_dir}/restourant/kitchen.csv')
-DISH_PATH = Path(f'{base_dir}/restourant/dish.csv')
+DISH_PATH = Path(f'{base_dir}/restourant/dishes.csv')
+ORDER_PATH = Path(f'{base_dir}/restourant/orders.csv')
+ORDER_ITEM_PATH = Path(f'{base_dir}/restourant/order-items.csv')
 WAREHOUSER_PATH = Path(f'{base_dir}/restourant/warehouse.csv')
 
 

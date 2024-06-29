@@ -4,6 +4,7 @@ from models.table import Table
 
 from write_func import write_inital_files
 from auth.auth import hash_password, authenticate_user, session
+from auth.auth import kitchen
 
 def main():
     if not os.path.isdir('./restourant'):
@@ -38,6 +39,7 @@ def main():
         headers = ['name', 'price', 'current_quantity']
         write_inital_files('./restourant/warehouse.csv', headers, [])
 
+
         #eaders = ['debt', 'total_salary', 'salary_percent', 'margin_percent', 'commision_percent',]
 
 
@@ -47,66 +49,46 @@ def main():
         headers = ['table', 'dishes', 'waiter', 'status']
         write_inital_files('./restourant/orders.csv', headers, [])
 
+        headers = ['id', 'order', 'dish', 'status']
+        write_inital_files('./restourant/orders-items.csv', headers, [])
+
         headers = ['current_orders']
         write_inital_files('./restourant/kitchen.csv', headers, [])
-
-
-
-
-
-
+        
         
 
     else:
         
-        
-        
 
-        main_menu = [
-            'Place an Order',
-            'Login'
+        print('please login')
+        username = input("Username: ")
+        password = input('Password: ')
 
-        ]
 
-        for index, value in enumerate(main_menu):
-            print(f'{index + 1}. {value}')
-
+        user = authenticate_user(username, password)
+        kitchen.fill_the_kitchen()
         
-        
+        print(kitchen.current_orders)
+
+        #print(session.current_user.permissions)
+        for index, (key, value) in enumerate(session.current_user.permissions.items()):
+            print(f'{index + 1}. {key}')        
+      
+
+
+
         choice = input("Choose option: ")
-        
-        if choice == '1':
-            ...
-        
-        elif choice == '2':
 
-            user = login()
-            if user:
-                while True:
-                    #print(session.current_user.permissions)
-                    for index, (key, value) in enumerate(session.current_user.permissions.items()):
-                        print(f'{index + 1}. {key}')
-        
-        
-                    choice = input("Choose option: ")
-        
-        
-                    session.current_user.permissions[list(session.current_user.permissions.keys())[int(choice) - 1]]()
-        
-        
-             
-                    #print(type(session.current_user))
+
+        session.current_user.permissions[list(session.current_user.permissions.keys())[int(choice) - 1]]()
+
+
     
+        #print(type(session.current_user))
+
+        print(session.current_user.permissions)
 
 
-
-def login():
-    username = input("Username: ")
-    password = input('Password: ')
-
-    user = authenticate_user(username, password)
-    return user
-        
 
 
 if __name__ == "__main__":
