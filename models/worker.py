@@ -7,8 +7,9 @@ class WarehouseWorker:
 
     
     def check_products(self):
+        from auth.auth import session
         for index, product in enumerate(self.warehouse.products):
             if product.timestamp + timedelta(days=product.days) > datetime.datetime.today():
                 self.warehouse.products.pop(index)
 
-        warehouse.write_products()
+        session.warehouse.write_products()
