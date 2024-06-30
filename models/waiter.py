@@ -12,7 +12,8 @@ class Waiter:
         self.permissions = {
             'Get Order': self.create_order, 
             'Add Order to Kitchen' : self.create_order,
-            'Check Orders': self.check_orders
+            'Check Orders': self.check_orders,
+            
             }
     
 
@@ -69,6 +70,7 @@ class Waiter:
     
 
     def create_order(self):
+        from auth.auth import session
         dishes = self.get_dish_names()
         table_id = self.get_table_id()
         waiter = self.user
@@ -76,42 +78,47 @@ class Waiter:
         if dishes and table_id:
             orderitems = []
             dishes_names = [dish.name for dish in dishes]
-
             order = Order(table=table_id, orderitems=[], waiter=waiter)
-            orderitems = [OrderItem(dish=dish, order_table=order.table) for dish in dishes_names]
-  
-            order.orderitems = orderitems
-            self.orders.append(order)
 
-            with open(file=ORDER_PATH, mode='a', encoding='utf-8') as file:
-                headers = ['table', 'dishes', 'waiter', 'status']
+            for dish in dishes_names:
+                if session.kitchen.check_if_enough_ingredients(dish=dish):
 
-                writer = csv.DictWriter(file, fieldnames=headers)
+                    orderitems = [OrderItem(dish=dish, order_table=order.table) for dish in dishes_names]
+                    order.orderitems = orderitems
 
-                writer.writerow({
-                    'table': table_id,
-                    'dishes': dishes_names,
-                    'waiter': waiter.username,
-                    'status': order.status
-                })
-
-
-        with open(ORDER_ITEM_PATH, 'a') as file:
-            headers = ['id', 'order', 'dish', 'status']
-
-            writer = csv.DictWriter(file, fieldnames=headers)
             
-            for order_item in orderitems:
-                writer.writerow({
-                    'id': order_item.id,
-                    'order': order_item.order_table,
-                    'dish': order_item.dish,
-                    'status': order_item.status
-                })
+            if orderitems:
+                self.orders.append(order)
 
-            return order
-        
+                with open(file=ORDER_PATH, mode='a', encoding='utf-8') as file:
+                    headers = ['table', 'dishes', 'waiter', 'status']
 
+                    writer = csv.DictWriter(file, fieldnames=headers)
+
+                    writer.writerow({
+                        'table': table_id,
+                        'dishes': dishes_names,
+                        'waiter': waiter.username,
+                        'status': order.status
+                    })
+
+
+                with open(ORDER_ITEM_PATH, 'a') as file:
+                    headers = ['id', 'order', 'dish', 'status']
+
+                    writer = csv.DictWriter(file, fieldnames=headers)
+                    
+                    for order_item in orderitems:
+                        writer.writerow({
+                            'id': order_item.id,
+                            'order': order_item.order_table,
+                            'dish': order_item.dish,
+                            'status': order_item.status
+                        })
+
+                return order
+            
+            return False
 
     
     def check_orders(self):
@@ -129,8 +136,8 @@ class Waiter:
         for order in available_orders:
             print(order.dish, order.status)
 
-
-    
+        
+        
 
 
 

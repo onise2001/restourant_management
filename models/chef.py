@@ -7,13 +7,14 @@ from update_func import update_value_in_csv
 class Chef:
 
     def __init__(self, user):
-        from auth.auth import session
+        from auth.auth import session, log_out_user
 
         self.user = user
         self.permissions = {
             'See orders': session.kitchen.display_all_order_status, 
             'Create Dish': self.create_dish, 
-            'Prepare Order Item': self.prepare_order_item
+            'Prepare Order Item': self.prepare_order_item,
+            'Log Out': log_out_user
         }
     
 
@@ -33,7 +34,7 @@ class Chef:
     
     def get_order_item(self):
         from auth.auth import session
-        session.display_all_order_status()
+        session.kitchen.display_all_order_status()
         item_id = input('Which Order Item would you like to mark as finished? >>> ')
 
     
@@ -79,9 +80,11 @@ class Chef:
         
 
         while True: 
-            ingredient = input('ingredient>>>> ')
+            ingredient = input('ingredient>>> ')
             if ingredient.isalpha() and session.kitchen.check_ingredient_in_database(ingredient=ingredient):
-                ingredients.append(ingredient)
+                amount = input('amount>>>')
+                ingredient_data = {f'{ingredient}': amount}
+                ingredients.append(ingredient_data)
             
             elif ingredient == "1":
                 break

@@ -49,7 +49,7 @@ class Warehouse:
             if product.name.lower() == name.lower():
                 if float(product.current_quantity) - float(quantity) >= 0:
                     product.current_quantity = float(product.current_quantity) - float(quantity)
-                    self.write_products()
+                    
                     return True
                 return False
             

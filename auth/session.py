@@ -22,6 +22,10 @@ class Session:
             if role_class:
                 self._current_user = role_class(user)
             return user
+        
+        elif user is None:
+            self._current_user = None
+            
         raise ValueError('Please provide User object')
     
 

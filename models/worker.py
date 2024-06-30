@@ -14,7 +14,6 @@ class WarehouseWorker:
                 session.warehouse.products.pop(index)
                 print(f'{product.name} Removed')
                 session.warehouse.write_products()
-                
-            else:
 
+            else:
                 print('all products ok')

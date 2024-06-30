@@ -5,6 +5,10 @@ import paths
 from write_func import write_inital_files
 from auth.auth import hash_password, authenticate_user, session, log_out_user
 
+
+# TODO CHECK IF THERE ARE ENOUGH INGREDIENTS IN THE DATABASE
+# TODO USE LAST INGREDIENTS
+
 def main():
     while True:
         if not os.path.isdir('./restourant'):
@@ -58,20 +62,23 @@ def main():
             
 
         else:
-            print('please login')
-            username = input("Username: ")
-            password = input('Password: ')
+            print(session.current_user)
+            if not session.current_user:
+                print('please login')
+                username = input("Username: ")
+                password = input('Password: ')
 
-        
+            
+                print(session.current_user)
 
-            user = authenticate_user(username, password)
-            session.current_user.permissions['Log Out'] = log_out_user
+                user = authenticate_user(username, password)
+                session.kitchen.fill_the_kitchen()
 
 
+            # print(session.current_user.permissions)
             print('*' * 20)
             print('0. Exit')
             
-            session.kitchen.fill_the_kitchen()
             
 
             for index, (key, value) in enumerate(session.current_user.permissions.items()):
