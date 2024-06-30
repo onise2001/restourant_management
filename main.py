@@ -3,7 +3,11 @@ from models.user import User
 from models.table import Table
 import paths
 from write_func import write_inital_files
-from auth.auth import hash_password, authenticate_user, session
+from auth.auth import hash_password, authenticate_user, get_session
+
+
+
+
 
 def main():
     if not os.path.isdir('./restourant'):
@@ -39,7 +43,11 @@ def main():
         write_inital_files('./restourant/warehouse.csv', headers, [])
 
 
-        headers = ['debt', 'total_salary', 'salary_percent', 'margin_percent', 'commision_percent',]
+        headers = ['debt', 'total_salary', 'salary_percent', 'margin_percent', 'commision_percent','current_balance']
+        salary_percent = input("Salary percent: ")
+        margin_percent = input("Margin percent: ")
+        commision_percent = input("Commision percent: ")
+        write_inital_files('./restourant/restourant.csv', headers, [{'debt': 0, 'total_salary': 0, 'salary_percent': int(salary_percent), 'margin_percent': int(margin_percent), 'commision_percent':int(commision_percent) , 'current_balance': 0}])
 
 
         headers = ['name', 'ingredients', 'prep_method', 'price']
@@ -57,13 +65,14 @@ def main():
         
 
     else:
+        session = get_session()
         print('please login')
         username = input("Username: ")
         password = input('Password: ')
 
 
         user = authenticate_user(username, password)
-        session.kitchen.fill_the_kitchen()
+        session.restourant.kitchen.fill_the_kitchen()
         
 
         #print(session.current_user.permissions)

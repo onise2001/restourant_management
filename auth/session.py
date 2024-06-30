@@ -1,14 +1,21 @@
-from models.kitchen import Kitchen
-from models.warehouse import Warehouse
 from models.user import User
 from .permissions import role_mapping
+from models.restourant import Restourant
 
+def singleton(cls):
+    instances = {}
+    def get_instance(*args, **kwargs):
+        if cls not in instances:
+            instances[cls] = cls(*args, **kwargs)
+        return instances[cls]
+    return get_instance
+
+@singleton
 class Session:
     def __init__(self):
         self._current_user = None
-        self.kitchen = Kitchen()
-        self.warehouse = Warehouse()
-    
+        self.restourant = Restourant()
+        
 
 
     @property
@@ -23,3 +30,14 @@ class Session:
                 self._current_user = role_class(user)
             return user
         raise ValueError('Please provide User object')
+    
+    @property
+    def restourant(self):
+        return self._restourant
+    
+    @restourant.setter
+    def restourant(self):
+        if self.user != None:
+            self._restourant = Restourant()
+            return 
+        self._restourant = None

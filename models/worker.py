@@ -8,8 +8,10 @@ class WarehouseWorker:
 
     
     def check_products(self):
-        for index, product in enumerate(self.warehouse.products):
-            if product.timestamp + timedelta(days=product.days) > datetime.datetime.today():
-                self.warehouse.products.pop(index)
+        from auth.auth import session
 
-        warehouse.write_products()
+        for index, product in enumerate(session.restourant.warehouse.products):
+            if product.timestamp + timedelta(days=product.days) > datetime.datetime.today() or product.current_quantity == 0:
+                session.warehouse.products.pop(index)
+
+        session.warehouse.write_products()

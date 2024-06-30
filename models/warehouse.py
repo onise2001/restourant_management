@@ -20,12 +20,13 @@ class Warehouse:
     def add_product(self, product):
         #if product.name in [my_product.name for my_product in self.products]:
         
-        for my_product in self.products:
-            if my_product.name.lower() == product.name.lower():
-                my_product.quantity += product.quantity
-                return self.products
+        # for my_product in self.products:
+        #     if my_product.name.lower() == product.name.lower():
+        #         my_product.quantity += product.quantity
+        #         return self.products
 
         self.products.append(product)
+        self.write_products()
         return self.products
     
 
@@ -45,9 +46,6 @@ class Warehouse:
         return balance
 
             
-     
-
-
 
     
     def write_products(self):
