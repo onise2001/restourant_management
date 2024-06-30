@@ -12,8 +12,7 @@ class Waiter:
         self.permissions = {
             'Get Order': self.create_order, 
             'Add Order to Kitchen' : self.create_order,
-            'Check Orders': self.check_orders,
-            
+            'Check Orders': self.check_orders
             }
     
 
@@ -25,11 +24,13 @@ class Waiter:
     
     def get_dish_names(self):
         from models.dish import Dish
+        from auth.auth import session
         dishes = []
 
         while True:
             dish_name = input('Dish Name>>>')
             print('When you finish input 1')
+            
 
             if dish_name == '1':
                 break
@@ -37,8 +38,11 @@ class Waiter:
                 reader = csv.DictReader(file)
                 for row in reader:
                     if row['name'] == dish_name:
-                        dish = Dish(**row)
-                        dishes.append(dish)
+                        if session.kitchen.check_if_enough_ingredients(dish=dish_name):
+                            dish = Dish(**row)
+                            dishes.append(dish)
+                        else:
+                            print('Not Enough Ingredients For the Dish')
                     else:
                         print('Not a Valid Dish')
 
@@ -78,47 +82,44 @@ class Waiter:
         if dishes and table_id:
             orderitems = []
             dishes_names = [dish.name for dish in dishes]
+
             order = Order(table=table_id, orderitems=[], waiter=waiter)
+            orderitems = [OrderItem(dish=dish, order_table=order.table) for dish in dishes_names]
+  
+            order.orderitems = orderitems
+            self.orders.append(order)
 
-            for dish in dishes_names:
-                if session.kitchen.check_if_enough_ingredients(dish=dish):
+           
 
-                    orderitems = [OrderItem(dish=dish, order_table=order.table) for dish in dishes_names]
-                    order.orderitems = orderitems
+            with open(file=ORDER_PATH, mode='a', encoding='utf-8') as file:
+                headers = ['table', 'dishes', 'waiter', 'status']
 
+                writer = csv.DictWriter(file, fieldnames=headers)
+
+                writer.writerow({
+                    'table': table_id,
+                    'dishes': dishes_names,
+                    'waiter': waiter.username,
+                    'status': order.status
+                })
+
+
+        with open(ORDER_ITEM_PATH, 'a') as file:
+            headers = ['id', 'order', 'dish', 'status']
+
+            writer = csv.DictWriter(file, fieldnames=headers)
             
-            if orderitems:
-                self.orders.append(order)
+            for order_item in orderitems:
+                writer.writerow({
+                    'id': order_item.id,
+                    'order': order_item.order_table,
+                    'dish': order_item.dish,
+                    'status': order_item.status
+                })
 
-                with open(file=ORDER_PATH, mode='a', encoding='utf-8') as file:
-                    headers = ['table', 'dishes', 'waiter', 'status']
+            return order
+        
 
-                    writer = csv.DictWriter(file, fieldnames=headers)
-
-                    writer.writerow({
-                        'table': table_id,
-                        'dishes': dishes_names,
-                        'waiter': waiter.username,
-                        'status': order.status
-                    })
-
-
-                with open(ORDER_ITEM_PATH, 'a') as file:
-                    headers = ['id', 'order', 'dish', 'status']
-
-                    writer = csv.DictWriter(file, fieldnames=headers)
-                    
-                    for order_item in orderitems:
-                        writer.writerow({
-                            'id': order_item.id,
-                            'order': order_item.order_table,
-                            'dish': order_item.dish,
-                            'status': order_item.status
-                        })
-
-                return order
-            
-            return False
 
     
     def check_orders(self):
@@ -136,8 +137,8 @@ class Waiter:
         for order in available_orders:
             print(order.dish, order.status)
 
-        
-        
+
+    
 
 
 
