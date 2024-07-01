@@ -22,16 +22,72 @@ from .product import Product
 
 class Admin:
     def __init__(self, user):
-            from auth.create_session import get_session
-
-            self.user = user
-            self.session = get_session()
-
-
-            self.permissions = {'Add User': self.add_user_to_database, 'Add Products to Warehouse': self.add_product_to_warehouse, 'See current warehouse': self.see_warehouse_balance, }
+        from auth.create_session import get_session
+        self.user = user
+        self.session = get_session()
 
 
-            
+        self.permissions = {
+            'Add User': self.add_user_to_database, 
+            'Add Products to Warehouse': self.add_product_to_warehouse, 
+            'See current warehouse': self.see_warehouse_balance, 
+            'List Users': self.list_users,
+            'Delete User': self.delete_user
+        }
+
+
+
+
+    def list_users(self):
+        field_to_extract = ['username']
+        with open(USERS_PATH, mode='r') as file:
+            reader = csv.DictReader(file)
+
+            extracted_data = []
+            for row in reader:
+                extracted_row = {field: row[field] for field in field_to_extract}
+                extracted_data.append(extracted_row)
+
+
+        print('Registered Users')
+        for data in extracted_data:
+            for key, username in data.items():
+                print(username)
+
+        return
+    
+    
+    def delete_user(self):
+
+        self.list_users()
+        username = input('Which user would you like to delete? input username >>>>')
+
+        rows = []
+        user_deleted = False
+        with open(USERS_PATH, mode='r') as infile:
+            reader = csv.DictReader(infile)
+
+            for row in reader:
+                if not row['username'] == username.lower().strip():
+                    rows.append(row)
+                else:
+                    user_deleted = True
+
+
+
+        with open(USERS_PATH, mode='w', newline='') as outfile:
+            writer = csv.DictWriter(outfile, fieldnames=reader.fieldnames)
+            writer.writeheader()
+            writer.writerows(rows)
+
+        if user_deleted:
+            print(f'User {username} deleted')
+            return True
+       
+        print(f'User {username} not found')
+        return False
+
+
 
 
         
@@ -56,7 +112,7 @@ class Admin:
         
         return None
 
-   def add_product_to_warehouse(self):
+    def add_product_to_warehouse(self):
         name = input('Name: ')
         price = input('Price per unit: ')
         quantity = input("Quantity: ")

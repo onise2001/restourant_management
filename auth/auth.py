@@ -6,11 +6,6 @@ from .create_session import get_session
 
 
 
-
-
-
-
-
 def hash_password(password):
     salt = bcrypt.gensalt()
     password = password.encode('utf-8')
@@ -43,9 +38,11 @@ def authenticate_user(username, password):
 
 def log_out_user():
     print('here')
-    session.current_user = None
-    print(session.current_user)
+    get_session().current_user = None
+    print(get_session().current_user)
 
+
+    
 
 
 
