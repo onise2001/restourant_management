@@ -2,18 +2,20 @@ from .warehouse import Warehouse
 from datetime import timedelta 
 import datetime
 class WarehouseWorker:
-    def __init__(self, user):
-        self.user = user
-        self.permissions = {'Check Products': self.check_products}
+
+    def __init__(self):
+        ...
+        #from auth.create_session import get_session
+        #self.user = user
+        #self.session = get_session()
+
 
     
-    def check_products(self):
-        from auth.auth import session
-        for index, product in enumerate(session.warehouse.products):
-            if product.timestamp + timedelta(days=product.days) > datetime.datetime.today():
-                session.warehouse.products.pop(index)
-                print(f'{product.name} Removed')
-                session.warehouse.write_products()
+    # def check_products(self):
 
-            else:
-                print('all products ok')
+    #     for index, product in enumerate(self.session.restourant.warehouse.products):
+    #         if product.timestamp + timedelta(days=product.days) > datetime.datetime.today() or product.current_quantity == 0:
+    #             self.session.warehouse.products.pop(index)
+
+    #     self.session.warehouse.write_products()
+

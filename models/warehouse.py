@@ -20,10 +20,10 @@ class Warehouse:
     def add_product(self, product):
         #if product.name in [my_product.name for my_product in self.products]:
         
-        for my_product in self.products:
-            if my_product.name.lower() == product.name.lower():
-                my_product.quantity += product.quantity
-                return self.products
+        # for my_product in self.products:
+        #     if my_product.name.lower() == product.name.lower():
+        #         my_product.quantity += product.quantity
+        #         return self.products
 
         self.products.append(product)
 
@@ -39,6 +39,7 @@ class Warehouse:
                 'timestamp': product.timestamp,
                 'days': product.days
             })
+
 
         return self.products
     
@@ -60,6 +61,7 @@ class Warehouse:
         return balance
 
             
+
     
     def write_products(self):
 
@@ -72,7 +74,7 @@ class Warehouse:
 
     
     def add_ingredient_to_warehouse(self):
-        from auth.auth import session
+      
         name = input('Name: ')
         price = input('Price per unit: ')
         quantity = input("Quantity: ")
