@@ -2,15 +2,12 @@ from models.user import User
 from paths import USERS_PATH
 import bcrypt
 import csv
-from auth.session import Session
+from .create_session import get_session
 
 
 #session = Session()
 
 
-def get_session():
-    session = Session()
-    return session
 
 
 

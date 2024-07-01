@@ -1,12 +1,18 @@
-from auth.auth import get_session
+from auth.create_session import get_session
 class Accoutant:
 
     def __init__(self, user):
         self.user = user
         self.session = get_session()
+        self.permissions = {'Add Distributor': self.add_distributor}
 
 
     
+    def add_distributor(self,distributor):
+        return self.session.distributor.new_distributor(distributor)
+        
+
+
     def get_warehouse_balance(self):
         balance = self.session.restourant.warehouse.get_balance()
         return balance
