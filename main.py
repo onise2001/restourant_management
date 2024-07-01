@@ -1,3 +1,4 @@
+
 import os
 from write_func import create_inital_files
 from auth.auth import  authenticate_user
@@ -7,33 +8,57 @@ from auth.create_session import get_session
 
 
 
+
+
 def main():
-    if not os.path.isdir('./restourant'):
-        create_inital_files()
-      
-        
-        
+    while True:
+        if not os.path.isdir('./restourant'):
+                create_inital_files()
 
-    else:
-        session = get_session()
-        print('please login')
-        username = input("Username: ")
-        password = input('Password: ')
+            
+            
+
+        else:
+            if not session.current_user:
+                print('please login')
+                username = input("Username: ")
+                password = input('Password: ')
+
+            
+                user = authenticate_user(username, password)
+
+            if user:
+                logout = {'Log Out': log_out_user}
+                session.current_user.permissions.update(logout)
+                session.kitchen.fill_the_kitchen()
+                
+                # print(session.current_user.permissions)
+                print('*' * 20)
+                print('0. Exit')
+                
+                
+
+                for index, (key, value) in enumerate(session.current_user.permissions.items()):
+                    print(f'{index + 1}. {key}')        
+            
+
+                choice = input("Choose option: ")
 
 
-        user = authenticate_user(username, password)
-        session.restourant.kitchen.fill_the_kitchen()
-        
+                if choice == '0':
+                    break
 
-        #print(session.current_user.permissions)
-        for index, (key, value) in enumerate(session.current_user.permissions.items()):
-            print(f'{index + 1}. {key}')        
-      
 
-        choice = input("Choose option: ")
-        session.current_user.permissions[list(session.current_user.permissions.keys())[int(choice) - 1]]()
+                try:
 
-        #print(type(session.current_user))
+
+                    session.current_user.permissions[list(session.current_user.permissions.keys())[int(choice) - 1]]()
+
+                except ValueError:
+                    continue
+
+            else: 
+                continue
 
 
 

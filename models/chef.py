@@ -7,13 +7,13 @@ from update_func import update_value_in_csv
 class Chef:
 
     def __init__(self, user):
-        from auth.auth import kitchen
+        from auth.auth import session, log_out_user
 
         self.user = user
         self.permissions = {
-            'See orders': kitchen.display_all_order_status, 
+            'See orders': session.kitchen.display_all_order_status, 
             'Create Dish': self.create_dish, 
-            'Prepare Order Item': self.prepare_order_item
+            'Prepare Order Item': self.prepare_order_item,
         }
     
 
@@ -33,7 +33,7 @@ class Chef:
     
     def get_order_item(self):
         from auth.auth import session
-        session.display_all_order_status()
+        session.kitchen.display_all_order_status()
         item_id = input('Which Order Item would you like to mark as finished? >>> ')
 
     
@@ -67,6 +67,7 @@ class Chef:
     
 
     def create_dish(self):
+        # TODO if no product, ask chef to create it and also specify the price
         from auth.auth import session
 
         ingredients = []
@@ -74,15 +75,29 @@ class Chef:
         name = input('Dish Name>>> ')
 
         print('Please Input Ingredients>>> ')
-        print('When you are done, input 1 ')
+        print('When you are done, please input 1 ')
+        
 
         while True: 
-            ingredient = input('ingredient>>>> ')
-            if ingredient.isalpha():
-                ingredients.append(ingredient)
+            ingredient = input('ingredient>>> ')
+            if ingredient.isalpha() and session.kitchen.check_ingredient_in_database(ingredient=ingredient):
+                amount = input('amount>>>')
+                ingredient_data = {f'{ingredient}': amount}
+                ingredients.append(ingredient_data)
             
             elif ingredient == "1":
                 break
+
+            else:
+                answer = input('Would you like to add ingredient to the database? y/n>>> ')
+
+                if answer.lower().strip() == 'y' or 'yes':
+                    session.warehouse.add_ingredient_to_warehouse()
+                
+                else:
+                    continue
+
+
 
         prep_method = input('Input prep method>>>> ')
         price = input('Price>>> ')

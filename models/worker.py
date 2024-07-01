@@ -2,6 +2,7 @@ from .warehouse import Warehouse
 from datetime import timedelta 
 import datetime
 class WarehouseWorker:
+
     def __init__(self):
         ...
         #from auth.create_session import get_session
@@ -17,3 +18,4 @@ class WarehouseWorker:
     #             self.session.warehouse.products.pop(index)
 
     #     self.session.warehouse.write_products()
+

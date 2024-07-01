@@ -42,16 +42,4 @@ class Session:
             return user
         raise ValueError('Please provide User object')
     
-    # @property
-    # def restourant(self):
-    #     return self._restourant
-    
-    # @restourant.setter
-    # def restourant(self):
-    #     if self.user != None:
-    #         self._restourant = Restourant()
-    #         return 
-    #     self._restourant = None
-
-
 

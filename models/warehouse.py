@@ -1,5 +1,5 @@
 import csv
-from paths import WAREHOUSER_PATH
+from paths import WAREHOUSE_PATH
 from .product import Product
 from datetime import timedelta
 from datetime import datetime
@@ -8,7 +8,7 @@ from datetime import datetime
 class Warehouse:
     def __init__(self):
         self.products = []
-        with open(file=WAREHOUSER_PATH, mode='r') as file:
+        with open(file=WAREHOUSE_PATH, mode='r') as file:
             
             reader = csv.DictReader(file)
             for line in reader:
@@ -26,7 +26,21 @@ class Warehouse:
         #         return self.products
 
         self.products.append(product)
-        self.write_products()
+
+        with open('restourant/warehouse.csv', mode='a') as file:
+            writer = csv.DictWriter(f=file,fieldnames=['name', 'price', 'current_quantity', 'timestamp', 'days'])
+            # writer.writerows([{'name': product.name, 'price':product.price, 'current_quantity': product.current_quantity, 'timestamp': product.timestamp, 'days': product.days} for product in self.products])
+
+
+            writer.writerow({
+                'name': product.name,
+                'price': product.price,
+                'current_quantity': product.current_quantity,
+                'timestamp': product.timestamp,
+                'days': product.days
+            })
+
+
         return self.products
     
 
@@ -36,10 +50,11 @@ class Warehouse:
             if product.name.lower() == name.lower():
                 if float(product.current_quantity) - float(quantity) >= 0:
                     product.current_quantity = float(product.current_quantity) - float(quantity)
-                    self.write_products()
+
                     return True
                 return False
             
+
 
     def get_balance(self):
         balance = [{'Name': product.name, 'quantity': product.current_quantity, 'days_to_expiration': int(product.days) - (datetime.date(datetime.today()) - product.timestamp).days} for product in self.products]
@@ -49,12 +64,23 @@ class Warehouse:
 
     
     def write_products(self):
+
+    
         with open('restourant/warehouse.csv', mode='w') as file:
             writer = csv.DictWriter(f=file,fieldnames=['name', 'price', 'current_quantity', 'timestamp', 'days'])
             writer.writeheader()
             writer.writerows([{'name': product.name, 'price':product.price, 'current_quantity': product.current_quantity, 'timestamp': product.timestamp, 'days': product.days} for product in self.products])
     
-    
 
+    
+    def add_ingredient_to_warehouse(self):
+      
+        name = input('Name: ')
+        price = input('Price per unit: ')
+        quantity = input("Quantity: ")
+        days = input("Days to save: ")
+
+        product = Product(name=name, price=price, current_quantity=quantity, days=days)
+        session.warehouse.add_product(product)
 
     

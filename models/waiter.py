@@ -24,11 +24,13 @@ class Waiter:
     
     def get_dish_names(self):
         from models.dish import Dish
+        from auth.auth import session
         dishes = []
 
         while True:
             dish_name = input('Dish Name>>>')
             print('When you finish input 1')
+            
 
             if dish_name == '1':
                 break
@@ -36,8 +38,11 @@ class Waiter:
                 reader = csv.DictReader(file)
                 for row in reader:
                     if row['name'] == dish_name:
-                        dish = Dish(**row)
-                        dishes.append(dish)
+                        if session.kitchen.check_if_enough_ingredients(dish=dish_name):
+                            dish = Dish(**row)
+                            dishes.append(dish)
+                        else:
+                            print('Not Enough Ingredients For the Dish')
                     else:
                         print('Not a Valid Dish')
 
@@ -69,6 +74,7 @@ class Waiter:
     
 
     def create_order(self):
+        from auth.auth import session
         dishes = self.get_dish_names()
         table_id = self.get_table_id()
         waiter = self.user
@@ -82,6 +88,8 @@ class Waiter:
   
             order.orderitems = orderitems
             self.orders.append(order)
+
+           
 
             with open(file=ORDER_PATH, mode='a', encoding='utf-8') as file:
                 headers = ['table', 'dishes', 'waiter', 'status']
@@ -115,8 +123,8 @@ class Waiter:
 
     
     def check_orders(self):
-        from auth.auth import kitchen, session
-        orders = kitchen.current_orders
+        from auth.auth import session
+        orders = session.kitchen.current_orders
 
         available_orders = []
 
