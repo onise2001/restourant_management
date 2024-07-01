@@ -60,39 +60,42 @@ def main():
             
 
         else:
-            print(session.current_user)
             if not session.current_user:
                 print('please login')
                 username = input("Username: ")
                 password = input('Password: ')
 
             
-                print(session.current_user)
-
                 user = authenticate_user(username, password)
+
+            if user:
+                logout = {'Log Out': log_out_user}
+                session.current_user.permissions.update(logout)
                 session.kitchen.fill_the_kitchen()
+                
+                # print(session.current_user.permissions)
+                print('*' * 20)
+                print('0. Exit')
+                
+                
 
-
-            # print(session.current_user.permissions)
-            print('*' * 20)
-            print('0. Exit')
+                for index, (key, value) in enumerate(session.current_user.permissions.items()):
+                    print(f'{index + 1}. {key}')        
             
-            
 
-            for index, (key, value) in enumerate(session.current_user.permissions.items()):
-                print(f'{index + 1}. {key}')        
-        
+                choice = input("Choose option: ")
 
-            choice = input("Choose option: ")
+                if choice == '0':
+                    break
 
-            if choice == '0':
-                break
+                try:
 
-            try:
+                    session.current_user.permissions[list(session.current_user.permissions.keys())[int(choice) - 1]]()
 
-                session.current_user.permissions[list(session.current_user.permissions.keys())[int(choice) - 1]]()
+                except ValueError:
+                    continue
 
-            except ValueError:
+            else: 
                 continue
 
 

@@ -65,7 +65,6 @@ class Kitchen:
 
                 orderitems = orderitem_dict[f'{old_order.table}']
                 old_order.orderitems = orderitems
-                print(old_order.table, old_order.orderitems)
 
                 self.current_orders.append(old_order)
             return
@@ -101,7 +100,6 @@ class Kitchen:
 
         if len(ingredients) == doable_counter:
             session.warehouse.write_products()
-
             return True
         return False
     

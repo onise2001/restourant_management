@@ -14,7 +14,6 @@ class Chef:
             'See orders': session.kitchen.display_all_order_status, 
             'Create Dish': self.create_dish, 
             'Prepare Order Item': self.prepare_order_item,
-            'Log Out': log_out_user
         }
     
 
