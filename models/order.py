@@ -8,16 +8,14 @@ STATUS_CHOICES = (
     "Preparing",
     "Finished",
 )
-class Order:
 
+class Order:
     def __init__(self, table, orderitems, waiter, status=STATUS_CHOICES[0]):
         self.table = table
         self.orderitems = orderitems
         self.waiter = waiter
         self.status = status
 
-    
-    
 
     def order_status(self):
         done_counter = 0
@@ -36,7 +34,6 @@ class Order:
                 path=ORDER_PATH, 
                 identifier_column='table', 
                 value_column='status')
-
 
         return 
 

@@ -40,8 +40,10 @@ def authenticate_user(username, password):
         print('WRONG CREDENTIALS')
         return None
 
+def log_out_user():
+    print('here')
+    session.current_user = None
+    print(session.current_user)
 
 
 
-session = Session()
-kitchen = Kitchen()

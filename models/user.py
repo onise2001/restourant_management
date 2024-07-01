@@ -9,11 +9,10 @@ ROLE_CHOICES = (
 
 
 class User:
-    def __init__(self,username,password,email, salary,role):
+    def __init__(self, username, password, email, role):
         self.username = username
         self.password = password
         self.email = email
-        self.salary = salary
         self.role = role
         
 
