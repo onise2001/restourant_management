@@ -1,3 +1,4 @@
+from models.user import User
 from paths import USERS_PATH
 import csv
 from .product import Product
@@ -32,7 +33,8 @@ class Admin:
             'Add Products to Warehouse': self.add_product_to_warehouse, 
             'See current warehouse': self.see_warehouse_balance, 
             'List Users': self.list_users,
-            'Delete User': self.delete_user
+            'Delete User': self.delete_user,
+            'Edit User': self.edit_user
         }
 
 
@@ -56,22 +58,83 @@ class Admin:
 
         return
     
-    
-    def delete_user(self):
 
+    def edit_user(self):
+        from auth.register import check_email_valid, check_role_valid, check_username_exists_valid
         self.list_users()
-        username = input('Which user would you like to delete? input username >>>>')
-
-        rows = []
-        user_deleted = False
+        username = input('Which user would you like to edit? input username >>>> ')
+        user_found = False
         with open(USERS_PATH, mode='r') as infile:
             reader = csv.DictReader(infile)
+
+            for row in reader:
+                if row['username'] == username.lower().strip():
+                    user = User(**row)
+                    user_found = True
+                    
+
+        if user_found:
+
+            headers = {
+                'username': [user.username, check_username_exists_valid],
+                'email': [user.email, check_email_valid],
+                'role': [user.role, check_role_valid],
+            }
+
+
+
+            for field, value in headers.items():
+                print(field, value[0])
+
+
+            choice = input('What would you like to edit? Choose from fields:')
+            
+
+            if not choice in headers:
+                print('invalid choice')
+                return None
+            
+            edit_value = input(f'New value for {choice} field')
+            field = headers[choice]
+
+            if field[1](edit_value):
+
+                deleted = self.delete_user_from_database(username=user.username)
+                setattr(user, choice, edit_value)
+
+                with open(USERS_PATH, 'a') as file:
+                    writer = csv.DictWriter(f=file, fieldnames=['username', 'password', 'email', 'role'])
+                    print(writer)
+                    writer.writerow({
+                        'username': user.username,
+                        'email': user.email,
+                        'password': user.password,
+                        'role': user.role,
+                    })
+
+
+
+                print(f'{field} Changed to {edit_value}')
+                return True
+            else:
+                print('Invalid Value')
+
+
+
+            
+
+    def delete_user_from_database(self, username):
+        rows = []
+        user_deleted = False
+        with open(USERS_PATH, mode='r') as file:
+            reader = csv.DictReader(file)
 
             for row in reader:
                 if not row['username'] == username.lower().strip():
                     rows.append(row)
                 else:
                     user_deleted = True
+
 
 
 
@@ -87,7 +150,11 @@ class Admin:
         print(f'User {username} not found')
         return False
 
-
+    def delete_user(self):
+        self.list_users()
+        username = input('Which user would you like to delete? input username >>>>')
+        self.delete_user_from_database(username)
+       
 
 
         
