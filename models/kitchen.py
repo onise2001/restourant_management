@@ -94,12 +94,39 @@ class Kitchen:
         if ingredients:
             for ingredient in ingredients:
                 for ingredient_name, ingredient_value in ingredient.items():
-                    if session.warehouse.extract_product(ingredient_name, ingredient_value):
+                    if self.extract_ingredients(ingredient_name, ingredient_value):
                         doable_counter += 1
                     else:
                         print(ingredient_name, 'Not Enough')
 
         if len(ingredients) == doable_counter:
             session.warehouse.write_products()
+
             return True
         return False
+    
+    
+    def extract_ingredients(self, ingredient, quantity):
+        all_saved_ingredient = []
+
+        from auth.auth import session
+        for product in session.warehouse.products:
+            if product.name == ingredient:
+                all_saved_ingredient.append(product)
+
+        sorted_products = sorted(all_saved_ingredient, key=lambda product: product.timestamp)
+        ingredient_quantity_sum = 0
+
+        for product in sorted_products:
+            ingredient_quantity_sum += float(product.current_quantity)
+
+            if ingredient_quantity_sum - float(quantity) >= 0:
+                product.current_quantity = ingredient_quantity_sum - float(quantity)
+                return True
+            else:
+                product.current_quantity = 0
+        
+        return False
+
+        
+

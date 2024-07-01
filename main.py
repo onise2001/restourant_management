@@ -6,7 +6,6 @@ from write_func import write_inital_files
 from auth.auth import hash_password, authenticate_user, session, log_out_user
 
 
-# TODO CHECK IF THERE ARE ENOUGH INGREDIENTS IN THE DATABASE
 # TODO USE LAST INGREDIENTS
 
 def main():
@@ -22,7 +21,6 @@ def main():
             password = hash_password(password)
             user = User(username=username, password=password, email=email, role=role)
 
-            
 
             headers = ['username', 'password', 'email', 'role']
 

@@ -49,10 +49,11 @@ class Warehouse:
             if product.name.lower() == name.lower():
                 if float(product.current_quantity) - float(quantity) >= 0:
                     product.current_quantity = float(product.current_quantity) - float(quantity)
-                    
+
                     return True
                 return False
             
+
 
     def get_balance(self):
         balance = [{'Name': product.name, 'quantity': product.current_quantity, 'days_to_expiration': int(product.days) - (datetime.date(datetime.today()) - product.timestamp).days} for product in self.products]
@@ -61,11 +62,14 @@ class Warehouse:
             
     
     def write_products(self):
+
+    
         with open('restourant/warehouse.csv', mode='w') as file:
             writer = csv.DictWriter(f=file,fieldnames=['name', 'price', 'current_quantity', 'timestamp', 'days'])
             writer.writeheader()
             writer.writerows([{'name': product.name, 'price':product.price, 'current_quantity': product.current_quantity, 'timestamp': product.timestamp, 'days': product.days} for product in self.products])
     
+
     
     def add_ingredient_to_warehouse(self):
         from auth.auth import session
