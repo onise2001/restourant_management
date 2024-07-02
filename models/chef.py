@@ -9,12 +9,12 @@ from utils import list_data, delete_row
 class Chef:
 
     def __init__(self, user):
-        from auth.auth import log_out_user
 
         from auth.create_session import get_session
 
         self.user = user
         self.session = get_session()
+
 
         self.permissions = {
             'See orders': self.session.restourant.kitchen.display_all_order_status, 
@@ -42,7 +42,7 @@ class Chef:
     
     def get_order_item(self):
 
-        from auth.create_session import session
+      
         self.session.restourant.kitchen.display_all_order_status()
 
         item_id = input('Which Order Item would you like to mark as finished? >>> ')

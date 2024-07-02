@@ -55,6 +55,8 @@ def authenticate_user(username, password):
 
 def log_out_user():
     session.current_user = None
+    return
+
 
 
     

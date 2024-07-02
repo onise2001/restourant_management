@@ -2,7 +2,7 @@
 import csv, os
 from models.user import User
 from models.table import Table
-
+import getpass
 from auth.auth import hash_password
 
 
@@ -10,7 +10,7 @@ def create_inital_files():
         os.mkdir("./restourant")
         print("You are the first user, please register and set up your restourant.")
         username = input("Username: ").strip().lower()
-        password = input("Passwrod: ").strip().lower()
+        password = getpass.getpass("Passwrod: ").strip().lower()
         email = input("Email: ").lower().strip()
         role = "Admin"
 
