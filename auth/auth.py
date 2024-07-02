@@ -5,6 +5,7 @@ from paths import USERS_PATH
 import bcrypt
 import csv
 from .create_session import get_session
+from .create_session import get_session
 
 
 
@@ -43,6 +44,8 @@ def authenticate_user(username, password):
         if bcrypt.checkpw(password, saved_password):
             logged_in_user = User(**user)
             print(isinstance(logged_in_user, User))
+            get_session().current_user = logged_in_user
+            get_session().restourant.kitchen.fill_the_kitchen()
             get_session().current_user = logged_in_user
             get_session().restourant.kitchen.fill_the_kitchen()
 

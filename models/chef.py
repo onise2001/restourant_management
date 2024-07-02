@@ -5,15 +5,17 @@ from .dish import Dish
 from update_func import update_value_in_csv
 from utils import list_data, delete_row
 
+
 class Chef:
 
     def __init__(self, user):
-        from auth.auth import log_out_user
 
         from auth.create_session import get_session
 
         self.user = user
         self.session = get_session()
+
+
         self.permissions = {
             'See orders': self.session.restourant.kitchen.display_all_order_status, 
             'Create Dish': self.create_dish, 
@@ -40,7 +42,7 @@ class Chef:
     
     def get_order_item(self):
 
-        from auth.create_session import session
+      
         self.session.restourant.kitchen.display_all_order_status()
 
         item_id = input('Which Order Item would you like to mark as finished? >>> ')
@@ -50,8 +52,6 @@ class Chef:
     
 
     def prepare_order_item(self):
-
-       
         item_id = self.get_order_item()
 
         for order in self.session.restourant.kitchen.current_orders:
@@ -68,8 +68,8 @@ class Chef:
                         value_column='status', 
                         path=ORDER_ITEM_PATH
                     )
-
-
+                    
+                    self.session.restourant.kitchen.display_all_order_status()
                             
 
         return 
@@ -78,21 +78,22 @@ class Chef:
     def create_dish(self):
 
 
-
-
-        name = input('Dish Name>>> ')
+        name = input('Dish Name>>> ').lower().strip()
 
         print('Please Input Ingredients>>> ')
         print('When you are done, please input 1 ')
         
 
- 
-        ingredients,price = self.gather_ingredient_info()
+        print('herere')
+        ingredients, price = self.gather_ingredient_info()
 
+        price += (float(price) / 100) * float(self.session.restourant.margin_percent)
 
+        print('rere')
         prep_method = input('Input prep method>>>> ')
 
         new_dish = Dish(name=name.lower(), ingredients=ingredients, prep_method=prep_method, price=price)
+        print('fdfd')
         self.session.restourant.kitchen.save_dish(new_dish)
         return new_dish
 
@@ -105,7 +106,7 @@ class Chef:
 
     def delete_dish(self):
         self.list_dishes()
-        dish = input('Input dish that you would like to delete')
+        dish = input('Input dish that you would like to delete').lower().strip()
         delete_row(identifier=dish, identifier_row='name', path=DISH_PATH)
         return
     
@@ -204,17 +205,19 @@ class Chef:
     def gather_ingredient_info(self):
         ingredients = []
         price = 0
-
         while True: 
             ingredient = input('ingredient>>> ')
-          
 
-            if ingredient.isalpha() and self.session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient) != None:
+            
+            if ingredient.isalpha() and session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient) != None:
+                
+                ingredient_price = session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient).price
 
                 amount = input('amount>>>')
+                
                 ingredient_data = {f'{ingredient}': amount}
                 ingredients.append(ingredient_data)
-                price += float(self.session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient))
+                price += float(ingredient_price)
             
             elif ingredient == "1":
                 break
@@ -223,8 +226,8 @@ class Chef:
                 answer = input('Would you like to add ingredient to the database? y/n>>> ')
 
                 if answer.lower().strip() == 'y' or 'yes':
-                    self.session.restourant.warehouse.add_ingredient_to_warehouse()
-
+                    ingredient = self.session.restourant.warehouse.add_ingredient_to_warehouse()
+                    ingredients.append(ingredient)
                 
                 else:
                     continue

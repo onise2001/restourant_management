@@ -45,6 +45,7 @@ class Session:
         if user is None:
             self._current_user = None
             return 
+
         raise ValueError('Please provide User object')
     
 

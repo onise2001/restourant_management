@@ -45,14 +45,14 @@ class Warehouse:
     
 
 
-    def extract_product(self, name, quantity):
-        for product in self.products:
-            if product.name.lower() == name.lower():
-                if float(product.current_quantity) - float(quantity) >= 0:
-                    product.current_quantity = float(product.current_quantity) - float(quantity)
+    # def extract_product(self, name, quantity):
+    #     for product in self.products:
+    #         if product.name.lower() == name.lower():
+    #             if float(product.current_quantity) - float(quantity) >= 0:
+    #                 product.current_quantity = float(product.current_quantity) - float(quantity)
 
-                    return True
-                return False
+    #                 return True
+    #             return False
             
 
 
@@ -82,11 +82,11 @@ class Warehouse:
         product = Product(name=name, price=price, current_quantity=quantity, days=days)
         self.add_product(product)
 
+        return product.name
+
     
     def check_ingredient_in_database(self, ingredient):
-        for row in self.products:
-            if row.name == ingredient:
-                print(row.price)
-                return row.price
-            
+        for product in self.products:
+            if product.name == ingredient and product.timestamp + timedelta(days=int(product.days)) < datetime.today().date() and product.current_quantity == 0:
+                return product
         return None

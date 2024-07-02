@@ -75,7 +75,7 @@ def get_user_info():
                 if option == '2':
                     break
                 if option == '1':
-                    password = input("Passwrod: ").strip().lower()
+                    password = getpass.getpass("Passwrod: ").strip().lower()
             else:
                 break
         

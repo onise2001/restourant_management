@@ -3,7 +3,6 @@ from .distributor import Distributor
 from paths import PAYMENTS_PATH
 import csv
 class Accoutant:
-
     def __init__(self, user):
         from auth.create_session import get_session
 
@@ -45,7 +44,7 @@ class Accoutant:
     
     def get_financial_report(self):
         finances = {'debt':self.session.restourant.debt, 'salary': self.session.restourant.total_salary, 'balance': self.session.restourant.current_balance}
-        print(f'Balance: {finances["balance"]}\nSalary to pay: {finances['salary']}\nDebt: {finances["debt"]}')
+        print(f'Balance: {finances["balance"]}\nSalary to pay: {finances["salary"]}\nDebt: {finances["debt"]}')
         return finances
 
     
@@ -102,7 +101,6 @@ class Accoutant:
     
     def calculate_dish_cost(self, dish):
         price = dish.price + (dish.price * (self.session.restourant.margin_percent / 100))
-
         return price
     
 
@@ -113,7 +111,7 @@ class Accoutant:
         if distributor is not None:
 
             for product in list(distributor.products):
-                print(f'Name: {product['name']}\nPrice per unit: {product['price']}')
+                print(f'Name: {product["name"]}\nPrice per unit: {product["price"]}')
                 amount = input("Amount: ")
                 total += float(amount) * float(product['price'])
                 days = input("Days to expiration: ")
