@@ -78,14 +78,7 @@ class Kitchen:
                     self.current_orders.append(old_order)
             return
         
-    def check_ingredient_in_database(self, ingredient):
-        with open(WAREHOUSE_PATH, 'r') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                if row['name'] == ingredient:
-                    return True
-            
-        return False
+  
     
 
     def check_if_enough_ingredients(self, dish):

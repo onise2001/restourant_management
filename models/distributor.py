@@ -1,6 +1,6 @@
 
 from paths import DISTRIBUTOR_PATH
-import csv 
+import csv, ast 
 
 class Distributor:
     def __init__(self, company_name=None, products=None):
@@ -11,16 +11,17 @@ class Distributor:
 
     @staticmethod
     def new_distributor(distributor):
+
         with open(DISTRIBUTOR_PATH, mode='a') as file:
-            writer = csv.DictWriter(file)
-            writer.writerow([{'company_name':distributor.company_name, 'products':distributor.products}])
+            writer = csv.DictWriter(file,fieldnames=['company_name', 'products'])
+            writer.writerow({'company_name':distributor.company_name, 'products':distributor.products})
             return True
         
     @staticmethod
     def get_all_distributos():
          with open(DISTRIBUTOR_PATH, mode='r') as file:
             reader = csv.DictReader(file)
-            distributors = [Distributor(company_name=line['company_name'], products=line['products']) for line in reader]
+            distributors = [Distributor(company_name=line['company_name'], products=ast.literal_eval(line['products'])) for line in reader]
             #writer.writerow([{'company_name':self.company_name, 'products':self.products}])
             return distributors
     @staticmethod
@@ -28,14 +29,15 @@ class Distributor:
         #writer.writerow([{'company_name':self.company_name, 'products':self.products}])
         distributors = Distributor.get_all_distributos()
         for distributor in distributors:
-            if company_name == distributor['company_name']:
-                new_distributor = Distributor(company_name=distributor['company_name'], products=distributor['products'])
-                return new_distributor
+            if company_name.lower() == distributor.company_name.lower():
+                print(distributor.products)
+               
+                return distributor
         
         return None
 
     @staticmethod
-    def delete_distributor( company_name):
+    def delete_distributor(company_name):
         distributors = Distributor.get_all_distributos()
         
         for index,distributor in enumerate(distributors):

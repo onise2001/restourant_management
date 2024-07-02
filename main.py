@@ -2,7 +2,12 @@
 import os
 from write_func import create_inital_files
 from auth.auth import  authenticate_user, log_out_user
-from auth.create_session import session
+from auth.create_session import get_session
+
+
+
+
+
 
 
 def main():
@@ -12,6 +17,7 @@ def main():
 
             
         else:
+            session = get_session()
             
             if not session.current_user:
                 print('please login')
@@ -22,6 +28,9 @@ def main():
                 user = authenticate_user(username, password)
 
             if user:
+                # logout = {'Log Out': log_out_user}
+                # session.current_user.permissions.update(logout)
+                # session.restourant.kitchen.fill_the_kitchen()
                 logout = {'Log Out': log_out_user}
                 session.current_user.permissions.update(logout)
                 
