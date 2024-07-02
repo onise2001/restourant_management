@@ -1,6 +1,8 @@
+import csv
 import getpass
 import re
 from models.user import ROLE_CHOICES, User
+from paths import USERS_PATH
 from .auth import get_user, hash_password
 
 
@@ -47,11 +49,17 @@ def check_email_valid(email):
         return False
 
 
+def check_role_valid(role):
+    if role.title() not in ROLE_CHOICES:
+        return False
+    return True
+
+
 def get_user_info():
     while True:
         username = input("Username: ").strip().lower()
 
-        if get_user(username):
+        if not check_username_exists_valid(username):
             print('User with this username already exists.')
             break
 
@@ -77,7 +85,7 @@ def get_user_info():
             break
 
         role = input('Role: ')
-        if role.title() not in ROLE_CHOICES:
+        if not check_role_valid(role):
             print("Invalid Role")
             break
         
@@ -86,3 +94,13 @@ def get_user_info():
         
         return user
     return None
+
+
+
+def check_username_exists_valid(username):
+    with open(file=USERS_PATH, mode='r', encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            if row['username'] == username:
+                return False
+        return True

@@ -13,13 +13,12 @@ from auth.create_session import get_session
 def main():
     while True:
         if not os.path.isdir('./restourant'):
-                create_inital_files()
+            create_inital_files()
 
             
-            
-
         else:
             session = get_session()
+            
             if not session.current_user:
                 print('please login')
                 username = input("Username: ")
@@ -32,6 +31,8 @@ def main():
                 # logout = {'Log Out': log_out_user}
                 # session.current_user.permissions.update(logout)
                 # session.restourant.kitchen.fill_the_kitchen()
+                logout = {'Log Out': log_out_user}
+                session.current_user.permissions.update(logout)
                 
                 # print(session.current_user.permissions)
                 print('*' * 20)

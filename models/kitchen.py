@@ -18,6 +18,7 @@ class Kitchen:
 
 
     def display_all_order_status(self):
+        print(self.current_orders)
         for order in self.current_orders:
             order.order_status()
 
@@ -42,17 +43,16 @@ class Kitchen:
     def fill_the_kitchen(self):
         orderitems = []
         orderitem_dict = {}
-
+        self.current_orders = []
         with open(file=ORDER_ITEM_PATH, mode='r') as file:
             reader = csv.DictReader(file)
             for line in reader:
-                orderitem = OrderItem(order_table=line['order_table'], dish=line['dish'], status=line['status'])
+                orderitem = OrderItem(id=line['id'], order_table=line['order_table'], dish=line['dish'], status=line['status'])
 
-
-                if orderitem.order_table not in orderitem_dict:
-                    orderitem_dict[orderitem.order_table] = [orderitem]
-                else:
-                    orderitem_dict[orderitem.order_table].append(orderitem)
+                # if orderitem.order_table not in orderitem_dict:
+                #     orderitem_dict[orderitem.order_table] = [orderitem]
+                # else:
+                #     orderitem_dict[orderitem.order_table].append(orderitem)
 
                 orderitems.append(orderitem)
                 
@@ -63,8 +63,15 @@ class Kitchen:
             for line in reader:
                 old_order = Order(table=line['table'], orderitems=[], waiter=line['waiter'], status=line['status'])
 
-                orderitems = orderitem_dict[f'{old_order.table}']
-                old_order.orderitems = orderitems
+                # orderitems = orderitem_dict[f'{old_order.table}']
+                # old_order.orderitems = orderitems
+
+                for orderitem in orderitems:
+                    if orderitem.order_table == old_order.table:
+                        old_order.orderitems.append(orderitem)
+
+                
+
 
                 self.current_orders.append(old_order)
             return
@@ -73,7 +80,7 @@ class Kitchen:
     
 
     def check_if_enough_ingredients(self, dish):
-        from auth.auth import session
+        from auth.create_session import session
         ingredients = None
         with open(DISH_PATH, 'r') as file:
             reader = csv.DictReader(file)
@@ -92,7 +99,7 @@ class Kitchen:
                         print(ingredient_name, 'Not Enough')
 
         if len(ingredients) == doable_counter:
-            session.warehouse.write_products()
+            session.restourant.warehouse.write_products()
             return True
         return False
     
@@ -100,8 +107,8 @@ class Kitchen:
     def extract_ingredients(self, ingredient, quantity):
         all_saved_ingredient = []
 
-        from auth.auth import session
-        for product in session.warehouse.products:
+        from auth.create_session import session
+        for product in session.restourant.warehouse.products:
             if product.name == ingredient:
                 all_saved_ingredient.append(product)
 
