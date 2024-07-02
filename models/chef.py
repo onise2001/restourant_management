@@ -209,9 +209,9 @@ class Chef:
             ingredient = input('ingredient>>> ')
 
             
-            if ingredient.isalpha() and session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient) != None:
+            if ingredient.isalpha() and self.session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient) != None:
                 
-                ingredient_price = session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient).price
+                ingredient_price = self.session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient).price
 
                 amount = input('amount>>>')
                 
