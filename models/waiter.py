@@ -47,6 +47,7 @@ class Waiter:
                     if row['name'] == dish_name:
                         dish_found = True
                         if self.session.restourant.kitchen.check_if_enough_ingredients(dish=dish_name):
+
                             dish = Dish(**row)
                             dishes.append(dish)
                         else:
@@ -55,6 +56,9 @@ class Waiter:
                 if not dish_found:
                     print('Not a valid Dish')
         return dishes
+    
+
+
 
     def get_table_id(self):
         table_found = False
@@ -82,14 +86,13 @@ class Waiter:
     
 
     def create_order(self):
-        from auth.create_session import session
         dishes = self.get_dish_names()
         table_id = self.get_table_id()
         waiter = self.user
         pending_order_exists = False
 
         if dishes and table_id:
-            for order in session.restourant.kitchen.current_orders:
+            for order in self.session.restourant.kitchen.current_orders:
                 if int(order.table) == table_id and order.payement == PAYMENT_CHOICES[1]:
                     pending_order_exists = True
                     break
@@ -135,11 +138,11 @@ class Waiter:
                             'status': order_item.status
                         })
 
-                session.restourant.warehouse.write_products()
+                self.session.restourant.warehouse.write_products()
 
                 return order
             
-            print('Order Could not be placed on this Table')
+            print('Order Could not be placed at this Table')
             return None
         
 
@@ -195,8 +198,7 @@ class Waiter:
         else:
             print('No tables')
             return
-
-
+        
 
         table_id = self.get_table_id()
         table_order = None
@@ -254,6 +256,4 @@ class Waiter:
         print('No order found')
         return None
     
-    def calculate_dish_cost(self, dish):
-        price = float(dish.price) + (float(dish.price) * (float(self.session.restourant.margin_percent) / 100))
-        return price
+

@@ -111,6 +111,10 @@ class Kitchen:
             return True
         return False
     
+    # Extract ingredients from database if there are enough.
+
+    # If prevoiusly added product amount is not enough, it will be 
+    # accumulated with later added product amounts.
     
     def extract_ingredients(self, ingredient, quantity):
         all_saved_ingredient = []

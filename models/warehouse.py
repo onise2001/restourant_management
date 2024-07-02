@@ -45,14 +45,14 @@ class Warehouse:
     
 
 
-    def extract_product(self, name, quantity):
-        for product in self.products:
-            if product.name.lower() == name.lower():
-                if float(product.current_quantity) - float(quantity) >= 0:
-                    product.current_quantity = float(product.current_quantity) - float(quantity)
+    # def extract_product(self, name, quantity):
+    #     for product in self.products:
+    #         if product.name.lower() == name.lower():
+    #             if float(product.current_quantity) - float(quantity) >= 0:
+    #                 product.current_quantity = float(product.current_quantity) - float(quantity)
 
-                    return True
-                return False
+    #                 return True
+    #             return False
             
 
 

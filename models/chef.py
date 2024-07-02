@@ -83,6 +83,7 @@ class Chef:
 
 
         prep_method = input('Input prep method>>>> ')
+
         price = input('Price>>> ')
 
         new_dish = Dish(name=name.lower(), ingredients=ingredients, prep_method=prep_method, price=price)
@@ -197,13 +198,16 @@ class Chef:
     def gather_ingredient_info(self):
         from auth.create_session import session
         ingredients = []
-
+        price = 0
         while True: 
             ingredient = input('ingredient>>> ')
+            
             if ingredient.isalpha() and session.restourant.kitchen.check_ingredient_in_database(ingredient=ingredient):
+            
                 amount = input('amount>>>')
                 ingredient_data = {f'{ingredient}': amount}
                 ingredients.append(ingredient_data)
+                
             
             elif ingredient == "1":
                 break
