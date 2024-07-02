@@ -19,7 +19,9 @@ class Order:
 
     def order_status(self):
         done_counter = 0
-        print(self.table, self.status)
+        from auth.create_session import session
+
+        print(f'Table {self.table} order items.  ')
 
         for order_item in self.orderitems:
             print(f'id: {order_item.id} dish - {order_item.dish}, status: {order_item.status}')
@@ -35,6 +37,9 @@ class Order:
                 identifier_column='table', 
                 value_column='status')
 
+            session.restourant.kitchen.current_orders.remove(self)
+            
+        print(f'Order Status {self.status}')
         return 
 
         

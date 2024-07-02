@@ -1,6 +1,7 @@
 import csv
+from models.dish import Dish
 from models.order_item import OrderItem
-from paths import DISH_PATH, ORDER_ITEM_PATH, ORDER_PATH, TABLES_PATH
+from paths import DISH_PATH, ORDER_ITEM_PATH, ORDER_PATH, PAYMENTS_PATH, TABLES_PATH
 from .order import Order
 from update_func import update_value_in_csv
 
@@ -8,12 +9,16 @@ from update_func import update_value_in_csv
 
 class Waiter:
     def __init__(self, user):
+        from auth.create_session import session
+
         self.user = user
         self.orders = []
+        self.session = session
         self.permissions = {
             'Get Order': self.create_order, 
             'Add Order to Kitchen' : self.create_order,
-            'Check Orders': self.check_orders
+            'Check Orders': self.check_orders,
+            'Get Payment': self.get_payment
             }
     
 
@@ -25,7 +30,6 @@ class Waiter:
     
     def get_dish_names(self):
         from models.dish import Dish
-        from auth.create_session import session
         dishes = []
 
         while True:
@@ -40,7 +44,7 @@ class Waiter:
                 for row in reader:
                     if row['name'] == dish_name:
                         dish_found = True
-                        if session.restourant.kitchen.check_if_enough_ingredients(dish=dish_name):
+                        if self.session.restourant.kitchen.check_if_enough_ingredients(dish=dish_name):
                             dish = Dish(**row)
                             dishes.append(dish)
                         else:
@@ -80,42 +84,42 @@ class Waiter:
         dishes = self.get_dish_names()
         table_id = self.get_table_id()
         waiter = self.user
-        order_exists = False
-        existing_order = None
+        pending_order_exists = False
+        existing_orders = []
 
         if dishes and table_id:
             for order in session.restourant.kitchen.current_orders:
-                if int(order.table) == table_id:
-                    order_exists = True
-                    existing_order = order
+                if int(order.table) == table_id and not order.status == 'Finished':
+                    pending_order_exists = True
+                    pending_existing_order = order
                     break
 
 
             orderitems = []
             dishes_names = [dish.name for dish in dishes]
 
-            orderitems = [OrderItem(dish=dish, order_table=order.table) for dish in dishes_names]
-  
+            orderitems = [OrderItem(dish=dish, order_table=table_id) for dish in dishes_names]
+            orderitem_ids = [orderitem.id for orderitem in orderitems]
 
-           
-            if not order_exists:
+            if not pending_order_exists:
                 order = Order(table=table_id, orderitems=[], waiter=waiter)
                 order.orderitems = orderitems
                 self.orders.append(order)
                 with open(file=ORDER_PATH, mode='a', encoding='utf-8') as file:
-                    headers = ['table', 'dishes', 'waiter', 'status']
+                    headers = ['table', 'dishes', 'orderitem_ids', 'waiter', 'status']
 
                     writer = csv.DictWriter(file, fieldnames=headers)
 
                     writer.writerow({
                         'table': table_id,
                         'dishes': dishes_names,
+                        'orderitem_ids': orderitem_ids,
                         'waiter': waiter.username,
                         'status': order.status
                     })
             else:
-                existing_order.orderitems += orderitems
-                existing_order.status = 'Pending'
+                pending_existing_order.orderitems += orderitems
+                pending_existing_order.status = 'Pending'
                 update_value_in_csv(
                     identifier=order.table, 
                     identifier_column='table', 
@@ -161,10 +165,44 @@ class Waiter:
             print(f'OrderItem: {order.dish}, Order Status: {order.status}, Table Number: {order.order_table}')
 
 
-    
+    def get_payment(self):
+        table_id = self.get_table_id()
+
+        table_order = None
+
+        for order in self.session.restourant.kitchen.current_orders:
+            if int(order.id) == table_id:
+                table_order = order
+                break
 
 
+        
+
+        if table_order:
+            orderitems = table_order.orderitems
 
 
+            dishes_names = [orderitem.dish for orderitem in orderitems]
+            dishes = []
 
-         
+            with open(DISH_PATH, 'r') as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    if row['dish'] in dishes_names:
+                    
+                        dishes.append(Dish(**row))
+
+            
+            sum = 0
+
+            for dish in dishes:
+                sum += self.session.restourant.kitchen.calculate_dish_cost(dish)
+
+
+            with open(PAYMENTS_PATH, 'a') as file:
+                writer = csv.DictWriter(file, reader.fieldnames)
+                writer.writerow({'amount': sum})
+
+            return sum
+        print('No order found')
+        return None

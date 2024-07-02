@@ -62,18 +62,25 @@ class Kitchen:
             reader = csv.DictReader(file)
             for line in reader:
                 old_order = Order(table=line['table'], orderitems=[], waiter=line['waiter'], status=line['status'])
+                
+                orderitem_ids = [int(orderitem.id) for orderitem in orderitems]
+                saved_orderitems_ids = ast.literal_eval(line['orderitem_ids'])
+                print(orderitem_ids)
+
+                common_ids = list(set(orderitem_ids) & set(saved_orderitems_ids))
+                print(common_ids)
 
                 # orderitems = orderitem_dict[f'{old_order.table}']
                 # old_order.orderitems = orderitems
-
-                for orderitem in orderitems:
-                    if orderitem.order_table == old_order.table:
-                        old_order.orderitems.append(orderitem)
+                if not old_order.status == 'Finished':
+                    for orderitem in orderitems:
+                        if int(orderitem.id) in common_ids:
+                            old_order.orderitems.append(orderitem)
 
                 
 
 
-                self.current_orders.append(old_order)
+                    self.current_orders.append(old_order)
             return
         
     def check_ingredient_in_database(self, ingredient):
@@ -132,6 +139,10 @@ class Kitchen:
                 product.current_quantity = 0
         
         return False
+    
+    def calculate_dish_cost(self, dish):
+        price = dish.price + (dish.price * (self.session.restourant.margin_percent / 100))
+        return price
 
         
 

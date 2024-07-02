@@ -49,7 +49,7 @@ def create_inital_files():
         headers = ['name', 'ingredients', 'prep_method', 'price']
         write_inital_files('./restourant/dishes.csv', headers, [])
 
-        headers = ['table', 'dishes', 'waiter', 'status']
+        headers = ['table', 'dishes', 'orderitem_ids', 'waiter', 'status']
         write_inital_files('./restourant/orders.csv', headers, [])
 
         headers = ['id', 'order', 'dish', 'status']

@@ -42,7 +42,6 @@ class Accoutant:
     
     def calculate_dish_cost(self, dish):
         price = dish.price + (dish.price * (self.session.restourant.margin_percent / 100))
-
         return price
 
 
