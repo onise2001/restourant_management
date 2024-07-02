@@ -27,7 +27,7 @@ class Admin:
         from auth.create_session import get_session
         self.user = user
         self.session = get_session()
-
+        
 
         self.permissions = {
             'Add User': self.add_user_to_database, 

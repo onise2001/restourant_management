@@ -46,20 +46,24 @@ def create_inital_files():
         salary_percent = input("Salary percent: ")
         margin_percent = input("Margin percent: ")
         commision_percent = input("Commision percent: ")
+
         write_inital_files('./restourant/restourant.csv', headers, [{'debt': 0, 'total_salary': 0, 'salary_percent': int(salary_percent), 'margin_percent': int(margin_percent), 'commision_percent':int(commision_percent) , 'current_balance': 0}])
 
 
         headers = ['name', 'ingredients', 'prep_method', 'price']
         write_inital_files('./restourant/dishes.csv', headers, [])
+        write_inital_files('./restourant/pending-dishes.csv', headers, [])
 
-        headers = ['table', 'dishes', 'waiter', 'status']
+        headers = ['table', 'dishes', 'orderitem_ids', 'waiter', 'status', 'payment', 'price']
         write_inital_files('./restourant/orders.csv', headers, [])
 
         headers = ['id', 'order', 'dish', 'status']
         write_inital_files('./restourant/orders-items.csv', headers, [])
 
-        headers = ['current_orders']
-        write_inital_files('./restourant/kitchen.csv', headers, [])
+
+
+
+        
 
 
 def write_inital_files(filepath, headers, rows):

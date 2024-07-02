@@ -1,7 +1,8 @@
 
 STATUS_CHOICE = (
         "Preparing",
-        "Done"
+        "Done",
+        'Delivered',
 )
 
 class OrderItem:
