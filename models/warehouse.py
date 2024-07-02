@@ -83,6 +83,8 @@ class Warehouse:
         product = Product(name=name, price=price, current_quantity=quantity, days=days)
         self.add_product(product)
 
+        return product.name
+
     
     def check_ingredient_in_database(self, ingredient):
         for product in self.products:

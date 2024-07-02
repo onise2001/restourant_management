@@ -89,7 +89,8 @@ class Chef:
         print('rere')
         prep_method = input('Input prep method>>>> ')
 
-        new_dish = Dish(name=name.lower(), ingredients=ast.literal_eval(ingredients), prep_method=prep_method, price=price)
+        new_dish = Dish(name=name.lower(), ingredients=ingredients, prep_method=prep_method, price=price)
+        print('fdfd')
         self.session.restourant.kitchen.save_dish(new_dish)
         return new_dish
 
@@ -209,6 +210,7 @@ class Chef:
                 
                 ingredient_price = session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient).price
                 amount = input('amount>>>')
+                
                 ingredient_data = {f'{ingredient}': amount}
                 ingredients.append(ingredient_data)
                 price += float(ingredient_price)
@@ -220,12 +222,11 @@ class Chef:
                 answer = input('Would you like to add ingredient to the database? y/n>>> ')
 
                 if answer.lower().strip() == 'y' or 'yes':
-                    self.session.restourant.warehouse.add_ingredient_to_warehouse()
-
+                    ingredient = self.session.restourant.warehouse.add_ingredient_to_warehouse()
+                    ingredients.append(ingredient)
                 
                 else:
                     continue
-
 
 
         return ingredients, price
