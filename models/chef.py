@@ -10,12 +10,12 @@ class Chef:
     def __init__(self, user):
         from auth.auth import log_out_user
 
-        from auth.create_session import session
+        from auth.create_session import get_session
 
         self.user = user
+        self.session = get_session()
         self.permissions = {
-            'See orders': session.restourant.kitchen.display_all_order_status, 
-
+            'See orders': self.session.restourant.kitchen.display_all_order_status, 
             'Create Dish': self.create_dish, 
             'Prepare Order Item': self.prepare_order_item,
             'Delete Dish': self.delete_dish,
@@ -32,7 +32,7 @@ class Chef:
     @user.setter
     def user(self, user):
         print(user.role)
-        if user.role == "Chef":
+        if user.role == "Chef" or user.role == 'Admin':
             self._user = user
             return
         
@@ -41,7 +41,7 @@ class Chef:
     def get_order_item(self):
 
         from auth.create_session import session
-        session.restourant.kitchen.display_all_order_status()
+        self.session.restourant.kitchen.display_all_order_status()
 
         item_id = input('Which Order Item would you like to mark as finished? >>> ')
 
@@ -54,7 +54,7 @@ class Chef:
        
         item_id = self.get_order_item()
 
-        for order in session.restourant.kitchen.current_orders:
+        for order in self.session.restourant.kitchen.current_orders:
 
             for order_item in order.orderitems:
                 if int(order_item.id) == item_id:
@@ -209,6 +209,7 @@ class Chef:
 
         while True: 
             ingredient = input('ingredient>>> ')
+            price = 0
 
             if ingredient.isalpha() and self.session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient) != None:
 
@@ -232,4 +233,4 @@ class Chef:
 
 
 
-        return ingredients
+        return ingredients, price

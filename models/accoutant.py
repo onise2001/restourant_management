@@ -1,5 +1,7 @@
 from .product import Product
 from .distributor import Distributor
+from paths import PAYMENTS_PATH
+import csv
 class Accoutant:
 
     def __init__(self, user):
@@ -7,7 +9,7 @@ class Accoutant:
 
         self.user = user
         self.session = get_session()
-        self.permissions = {'Add Distributor': self.add_distributor, 'See Financial Report': self.get_financial_report, 'Get products from distributor': self.get_products_from_distributor, "Pay salaries": self.pay_salaries, 'Pay debt':self.pay_debt}
+        self.permissions = {'Proccess pending payments': self.get_payment,'Add Distributor': self.add_distributor, 'See Financial Report': self.get_financial_report, 'Get products from distributor': self.get_products_from_distributor, "Pay salaries": self.pay_salaries, 'Pay debt':self.pay_debt}
 
 
     
@@ -53,20 +55,39 @@ class Accoutant:
     
     
     def pay_salaries(self):
-        if self.session.restourant.total_salary <= self.session.restourant.current_balance:
-            self.session.restourant.current_balance -= self.session.restourant.total_salary
-            self.session.restourant.total_salary = 0
-            self.session.restourant.write_restourant()
-            print("Salaries Paid.")
-            
-        print("Not enough balance to pay salaries")
-    
-    def get_payment(self, amount):
-        salary = amount / 100 * self.session.restourant.salary_percent
-        commision = amount / 100 * self.session.restourant.commision_percent
-        amount -= salary + commision
-        self.session.restourant.current_balance += amount
+        self.session.restourant.total_salary = 0
         self.session.restourant.write_restourant()
+        print("Salaries Paid.")
+            
+       
+    def get_payment(self):
+        pending_payments = self.read_pending_payments()
+
+        for amount in pending_payments:
+            if not isinstance(amount, (int, float)):
+                print(f"Invalid amount type: {type(amount)} with value {amount}")
+                continue  # Skip this amount and continue with the next one
+    
+            salary = (amount / 100) * self.session.restourant.salary_percent
+            commision = (amount / 100) * self.session.restourant.commision_percent
+            amount -= salary + commision
+            self.session.restourant.current_balance += amount
+            self.session.restourant.total_salary += salary + commision
+        
+        self.session.restourant.write_restourant()
+
+
+    def read_pending_payments(self):
+        payments = []
+
+        with open(PAYMENTS_PATH, mode='r') as file:
+            reader = csv.DictReader(file)
+
+            for line in reader:
+                print(type(float(line['amount'])))
+                payments.append(float(line['amount']))
+
+            return payments
 
 
 
@@ -98,9 +119,14 @@ class Accoutant:
 
             return 
         
-        print('No such distributor, add one.')
-
-        self.add_distributor()
+        print('No such distributor, would you like to add one?')
+        while True:
+            choice = input('1.Yes\n2.No')
+            if choice == '1':
+                self.add_distributor()
+                break
+            elif choice == '2':
+                break
 
 
 

@@ -20,22 +20,38 @@ import ast
 
 # print(input_password())
 
-
+from .accoutant import Accoutant
+from .chef import Chef
+from .waiter import Waiter
 
 class Admin:
     def __init__(self, user):
         from auth.create_session import get_session
         self.user = user
+        self.accounting = Accoutant(user)
+        self.kitchen_manager = Chef(user)
+        self.waiter_management = Waiter(user)
         self.session = get_session()
 
 
         self.permissions = {
-            'Add User': self.add_user_to_database, 
-            'Add Products to Warehouse': self.add_product_to_warehouse, 
-            'See current warehouse': self.see_warehouse_balance, 
-            'List Users': self.list_users,
-            'Delete User': self.delete_user,
-            'Edit User': self.edit_user
+            'User Management': {
+                'Add User': self.add_user_to_database, 
+                'List Users': self.list_users,
+                'Delete User': self.delete_user,
+                'Edit User': self.edit_user     
+            },
+            'Warehouse Management': {
+                'Add Products to Warehouse': self.add_product_to_warehouse, 
+                'See current warehouse': self.see_warehouse_balance, 
+
+            },
+            'Accounting': self.accounting.permissions,
+            'Kitchen Management': self.kitchen_manager.permissions,
+            'Waiter Management': self.waiter_management.permissions
+
+           
+           
         }
 
 

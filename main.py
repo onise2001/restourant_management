@@ -24,45 +24,53 @@ def main():
                 username = input("Username: ")
                 password = input('Password: ')
 
-            
                 user = authenticate_user(username, password)
 
             if user:
-                # logout = {'Log Out': log_out_user}
-                # session.current_user.permissions.update(logout)
-                # session.restourant.kitchen.fill_the_kitchen()
+               
                 logout = {'Log Out': log_out_user}
                 session.current_user.permissions.update(logout)
                 
-                # print(session.current_user.permissions)
                 print('*' * 20)
                 print('0. Exit')
                 
-                
+                if user.role == "Admin":
+                   admin_menu_management(session.current_user.permissions)
 
-                for index, (key, value) in enumerate(session.current_user.permissions.items()):
-                    print(f'{index + 1}. {key}')        
-            
+                else:
+                    key = menu_management(session.current_user.permissions)
+                    session.current_user.permissions[key]()
 
-                choice = input("Choose option: ")
-
-
-                if choice == '0':
-                    break
-
-
-                try:
-
-
-                    session.current_user.permissions[list(session.current_user.permissions.keys())[int(choice) - 1]]()
-
-                except ValueError:
-                    continue
 
             else: 
                 continue
 
 
+def admin_menu_management(permissions):
+
+    outer_key = menu_management(permissions)
+    if outer_key == "Log Out":
+        permissions[outer_key]()
+        return
+    
+    inner_key = menu_management(permissions[outer_key])
+
+    permissions[outer_key][inner_key]()
+
+
+
+
+def menu_management(menu):
+    for index, (key, value) in enumerate(menu.items()):
+        print(f'{index + 1}. {key}')        
+
+    choice = input("Choose option: ")
+    if choice == '0':
+        return
+        
+    key = list(menu.keys())[int(choice) - 1]
+    
+    return key
 
 
 

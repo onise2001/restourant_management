@@ -3,7 +3,7 @@ ROLE_CHOICES = (
     "Chef",
     "Accoutant",
     "Waiter",
-    "Warehouse Worker",
+    "Worker",
 )
 
 

@@ -9,15 +9,15 @@ class Restourant:
     def __init__(self):
         self.warehouse = Warehouse()
         self.kitchen = Kitchen()
-        self.warehouse_worker = WarehouseWorker()
+#        self.warehouse_worker = WarehouseWorker()
         self.distributor = Distributor
         fields = self.read_restourant()
         self.debt = float(fields['debt'])
-        self.total_salary = fields['total_salary']
-        self.salary_percent = fields['salary_percent']
-        self.margin_percent = fields['margin_percent']
-        self.commision_percent = fields['commision_percent']
-        self.current_balance = fields['current_balance']
+        self.total_salary = float(fields['total_salary'])
+        self.salary_percent = float(fields['salary_percent'])
+        self.margin_percent = float(fields['margin_percent'])
+        self.commision_percent = float(fields['commision_percent'])
+        self.current_balance = float(fields['current_balance'])
 
 
     
