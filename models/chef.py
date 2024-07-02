@@ -77,7 +77,6 @@ class Chef:
 
     def create_dish(self):
 
-        from auth.create_session import session
 
 
 
@@ -88,14 +87,13 @@ class Chef:
         
 
  
-        ingredients = self.gather_ingredient_info()
+        ingredients,price = self.gather_ingredient_info()
 
 
         prep_method = input('Input prep method>>>> ')
-        price = input('Price>>> ')
 
         new_dish = Dish(name=name.lower(), ingredients=ingredients, prep_method=prep_method, price=price)
-        session.restourant.kitchen.save_dish(new_dish)
+        self.session.restourant.kitchen.save_dish(new_dish)
         return new_dish
 
 
@@ -204,19 +202,19 @@ class Chef:
 
 
     def gather_ingredient_info(self):
-        from auth.create_session import session
         ingredients = []
+        price = 0
 
         while True: 
             ingredient = input('ingredient>>> ')
-            price = 0
+          
 
             if ingredient.isalpha() and self.session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient) != None:
 
                 amount = input('amount>>>')
                 ingredient_data = {f'{ingredient}': amount}
                 ingredients.append(ingredient_data)
-                price += self.session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient)
+                price += float(self.session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient))
             
             elif ingredient == "1":
                 break
@@ -230,6 +228,9 @@ class Chef:
                 
                 else:
                     continue
+
+            
+        price += price / 100 * self.session.restourant.margin_percent
 
 
 

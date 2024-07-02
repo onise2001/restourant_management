@@ -86,6 +86,7 @@ class Warehouse:
     def check_ingredient_in_database(self, ingredient):
         for row in self.products:
             if row.name == ingredient:
+                print(row.price)
                 return row.price
             
         return None

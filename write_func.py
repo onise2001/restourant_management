@@ -51,6 +51,8 @@ def create_inital_files():
 
         headers = ['name', 'ingredients', 'prep_method', 'price']
         write_inital_files('./restourant/dishes.csv', headers, [])
+        headers = ['amount']
+        write_inital_files('./restourant/payments.csv', headers, [])
 
         headers = ['table', 'dishes', 'waiter', 'status']
         write_inital_files('./restourant/orders.csv', headers, [])

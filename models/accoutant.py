@@ -9,7 +9,7 @@ class Accoutant:
 
         self.user = user
         self.session = get_session()
-        self.permissions = {'Proccess pending payments': self.get_payment,'Add Distributor': self.add_distributor, 'See Financial Report': self.get_financial_report, 'Get products from distributor': self.get_products_from_distributor, "Pay salaries": self.pay_salaries, 'Pay debt':self.pay_debt}
+        self.permissions = {'Proccess pending payments': self.get_payment,'Add Distributor': self.add_distributor, 'Delete Distributor': self.delete_distributor,'See Financial Report': self.get_financial_report, 'Get products from distributor': self.get_products_from_distributor, "Pay salaries": self.pay_salaries, 'Pay debt':self.pay_debt}
 
 
     
@@ -31,6 +31,12 @@ class Accoutant:
         
         return self.session.restourant.distributor.new_distributor(distributor)
         
+    def delete_distributor(self):
+        name = input('Company Name: ')
+        if self.session.restourant.distributor.delete_distributor(name):
+            print('Distributor Deleted')
+        else:
+            print('No such distributor')
 
 
     def get_warehouse_balance(self):

@@ -41,7 +41,7 @@ class Distributor:
         distributors = Distributor.get_all_distributos()
         
         for index,distributor in enumerate(distributors):
-            if company_name == distributor['company_name']:
+            if company_name == distributor.company_name:
                 distributors.pop(index) 
                 Distributor.write_all_distributors(distributors)
                 return True
@@ -49,12 +49,12 @@ class Distributor:
         return False
     
     @staticmethod
-    def write_all_distributors(self,distributors):
+    def write_all_distributors(distributors):
         with open(DISTRIBUTOR_PATH, mode='w') as file:
             writer = csv.DictWriter(file, fieldnames=['company_name', 'products'])
             writer.writeheader()
             for distr in distributors:
-                writer.writerow([{'company_name': distr.company_name, 'product': distr.products}])
+                writer.writerow({'company_name': distr.company_name, 'products': distr.products})
 
 
 
