@@ -36,7 +36,7 @@ class Accoutant:
     
     def get_financial_report(self):
         finances = {'debt':self.session.restourant.debt, 'salary': self.session.restourant.total_salary, 'balance': self.session.restourant.current_balance}
-        print(f'Balance: {finances["balance"]}\nSalary to pay: {finances['salary']}\nDebt: {finances["debt"]}')
+        print(f'Balance: {finances["balance"]}\nSalary to pay: {finances["salary"]}\nDebt: {finances["debt"]}')
         return finances
 
     
@@ -84,7 +84,7 @@ class Accoutant:
         if distributor is not None:
 
             for product in list(distributor.products):
-                print(f'Name: {product['name']}\nPrice per unit: {product['price']}')
+                print(f'Name: {product["name"]}\nPrice per unit: {product["price"]}')
                 amount = input("Amount: ")
                 total += float(amount) * float(product['price'])
                 days = input("Days to expiration: ")

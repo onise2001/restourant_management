@@ -3,7 +3,7 @@ import csv
 import os
 from models.dish import Dish
 from models.order_item import OrderItem
-from paths import DISH_PATH, KITCHEN_PATH, ORDER_ITEM_PATH, ORDER_PATH, WAREHOUSE_PATH
+from paths import DISH_PATH, KITCHEN_PATH, ORDER_ITEM_PATH, ORDER_PATH, PENDING_DISHES, WAREHOUSE_PATH
 from .order import Order
 
 
@@ -24,7 +24,7 @@ class Kitchen:
 
 
     def save_dish(self, dish):
-        with open(file=DISH_PATH, mode='a', encoding='utf-8') as file:
+        with open(file=PENDING_DISHES, mode='a', encoding='utf-8') as file:
             headers = ['name', 'ingredients', 'prep_method', 'price']
 
 
@@ -61,7 +61,7 @@ class Kitchen:
         with open(file=ORDER_PATH, mode='r') as file:
             reader = csv.DictReader(file)
             for line in reader:
-                old_order = Order(table=line['table'], orderitems=[], waiter=line['waiter'], status=line['status'], payement=line['payment'])
+                old_order = Order(table=line['table'], orderitems=[], waiter=line['waiter'], status=line['status'], payement=line['payment'], price=line['price'])
                 
                 orderitem_ids = [int(orderitem.id) for orderitem in orderitems]
                 saved_orderitems_ids = ast.literal_eval(line['orderitem_ids'])

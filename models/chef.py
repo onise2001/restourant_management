@@ -5,6 +5,7 @@ from .dish import Dish
 from update_func import update_value_in_csv
 from utils import list_data, delete_row
 
+
 class Chef:
 
     def __init__(self, user):
@@ -75,8 +76,6 @@ class Chef:
 
         from auth.create_session import session
 
-
-
         name = input('Dish Name>>> ')
 
         print('Please Input Ingredients>>> ')
@@ -84,12 +83,13 @@ class Chef:
         
 
  
-        ingredients = self.gather_ingredient_info()
+        ingredients, price = self.gather_ingredient_info()
+
+        price += (price / 100) * self.session.restourant.margin_percent
 
 
         prep_method = input('Input prep method>>>> ')
 
-        price = input('Price>>> ')
 
         new_dish = Dish(name=name.lower(), ingredients=ingredients, prep_method=prep_method, price=price)
         session.restourant.kitchen.save_dish(new_dish)
@@ -207,12 +207,13 @@ class Chef:
         while True: 
             ingredient = input('ingredient>>> ')
             
-            if ingredient.isalpha() and session.restourant.kitchen.check_ingredient_in_database(ingredient=ingredient):
-            
+            if ingredient.isalpha() and session.restourant.kitchen.check_ingredient_in_database(ingredient=ingredient) != None:
+                
+                ingredient_price = session.restourant.kitchen.check_ingredient_in_database(ingredient=ingredient).price
                 amount = input('amount>>>')
                 ingredient_data = {f'{ingredient}': amount}
                 ingredients.append(ingredient_data)
-                
+                price += float(ingredient_price)
             
             elif ingredient == "1":
                 break
@@ -229,4 +230,4 @@ class Chef:
 
 
 
-        return ingredients
+        return ingredients, price
