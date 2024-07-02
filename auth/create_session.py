@@ -5,4 +5,3 @@ def get_session():
     return session
 
 
-session = get_session()

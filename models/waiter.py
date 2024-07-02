@@ -10,11 +10,11 @@ from update_func import update_value_in_csv
 
 class Waiter:
     def __init__(self, user):
-        from auth.create_session import session
+        from auth.create_session import get_session
 
         self.user = user
         self.orders = []
-        self.session = session
+        self.session = get_session()
         self.permissions = {
             'Get Order': self.create_order, 
             'Add Order to Kitchen' : self.create_order,
@@ -160,13 +160,13 @@ class Waiter:
 
     
     def check_orders(self):
-        from auth.create_session import session
-        orders = session.restourant.kitchen.current_orders
+        from auth.create_session import get_session
+        orders = get_session().restourant.kitchen.current_orders
         available_orders = []
         for order in orders:
             print(order.waiter, self.session.current_user.user.username)
 
-            if order.waiter == session.current_user.user.username:
+            if order.waiter == get_session().current_user.user.username:
                 for order_item in order.orderitems:
                     if order_item.status == 'Done':
                         available_orders.append(order_item)
