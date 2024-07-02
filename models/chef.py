@@ -7,11 +7,14 @@ from update_func import update_value_in_csv
 class Chef:
 
     def __init__(self, user):
-        from auth.auth import session, log_out_user
+        from auth.auth import log_out_user
+        from auth.create_session import session
+
+    
 
         self.user = user
         self.permissions = {
-            'See orders': session.kitchen.display_all_order_status, 
+            'See orders': session.restourant.kitchen.display_all_order_status, 
             'Create Dish': self.create_dish, 
             'Prepare Order Item': self.prepare_order_item,
         }
@@ -32,8 +35,9 @@ class Chef:
         raise ValueError("This user is not a chef")
     
     def get_order_item(self):
-        from auth.auth import session
-        session.kitchen.display_all_order_status()
+        from auth.auth import get_session
+        session = get_session()
+        session.restourant.kitchen.display_all_order_status()
         item_id = input('Which Order Item would you like to mark as finished? >>> ')
 
     
@@ -42,11 +46,11 @@ class Chef:
     
 
     def prepare_order_item(self):
-        from auth.auth import session
-        rows = []
+        from auth.auth import get_session
+        session = get_session()
         item_id = self.get_order_item()
 
-        for order in session.kitchen.current_orders:
+        for order in session.restourant.kitchen.current_orders:
             for order_item in order.orderitems:
                 if order_item.id == item_id:
                     order_item.status = 'Done'
@@ -68,7 +72,7 @@ class Chef:
 
     def create_dish(self):
         # TODO if no product, ask chef to create it and also specify the price
-        from auth.auth import session
+        from auth.create_session import session
 
         ingredients = []
 
@@ -80,7 +84,7 @@ class Chef:
 
         while True: 
             ingredient = input('ingredient>>> ')
-            if ingredient.isalpha() and session.kitchen.check_ingredient_in_database(ingredient=ingredient):
+            if ingredient.isalpha() and session.restourant.kitchen.check_ingredient_in_database(ingredient=ingredient):
                 amount = input('amount>>>')
                 ingredient_data = {f'{ingredient}': amount}
                 ingredients.append(ingredient_data)
@@ -92,7 +96,7 @@ class Chef:
                 answer = input('Would you like to add ingredient to the database? y/n>>> ')
 
                 if answer.lower().strip() == 'y' or 'yes':
-                    session.warehouse.add_ingredient_to_warehouse()
+                    session.restourant.warehouse.add_ingredient_to_warehouse()
                 
                 else:
                     continue
@@ -103,7 +107,7 @@ class Chef:
         price = input('Price>>> ')
 
         new_dish = Dish(name=name, ingredients=ingredients, prep_method=prep_method, price=price)
-        session.kitchen.save_dish(new_dish)
+        session.restourant.kitchen.save_dish(new_dish)
         return new_dish
 
 

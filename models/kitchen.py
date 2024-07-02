@@ -80,7 +80,7 @@ class Kitchen:
     
 
     def check_if_enough_ingredients(self, dish):
-        from auth.auth import session
+        from auth.create_session import session
         ingredients = None
         with open(DISH_PATH, 'r') as file:
             reader = csv.DictReader(file)
@@ -99,7 +99,7 @@ class Kitchen:
                         print(ingredient_name, 'Not Enough')
 
         if len(ingredients) == doable_counter:
-            session.warehouse.write_products()
+            session.restourant.warehouse.write_products()
             return True
         return False
     
@@ -107,8 +107,8 @@ class Kitchen:
     def extract_ingredients(self, ingredient, quantity):
         all_saved_ingredient = []
 
-        from auth.auth import session
-        for product in session.warehouse.products:
+        from auth.create_session import session
+        for product in session.restourant.warehouse.products:
             if product.name == ingredient:
                 all_saved_ingredient.append(product)
 
