@@ -24,7 +24,7 @@ class Kitchen:
 
 
     def save_dish(self, dish):
-        with open(file=PENDING_DISHES, mode='a') as file:
+        with open(file=DISH_PATH, mode='a') as file:
             headers = ['name', 'ingredients', 'prep_method', 'price']
 
             writer = csv.DictWriter(file, fieldnames=headers)
@@ -47,7 +47,7 @@ class Kitchen:
         with open(file=ORDER_ITEM_PATH, mode='r') as file:
             reader = csv.DictReader(file)
             for line in reader:
-                orderitem = OrderItem(id=line['id'], order_table=line['order_table'], dish=line['dish'], status=line['status'])
+                orderitem = OrderItem(id=line['id'], order_table=line['order'], dish=line['dish'], status=line['status'])
 
                 # if orderitem.order_table not in orderitem_dict:
                 #     orderitem_dict[orderitem.order_table] = [orderitem]

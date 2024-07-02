@@ -2,7 +2,7 @@ from .warehouse import Warehouse
 from datetime import timedelta 
 import datetime
 
-class WarehouseWorker():
+class WarehouseWorker:
 
     def __init__(self,user):
         from auth.create_session import get_session
