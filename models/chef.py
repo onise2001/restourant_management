@@ -1,8 +1,8 @@
 import csv
-from paths import ORDER_ITEM_PATH
+from paths import DISH_PATH, ORDER_ITEM_PATH
 from .dish import Dish
 from update_func import update_value_in_csv
-
+from utils import list_data, delete_row
 
 class Chef:
 
@@ -10,13 +10,13 @@ class Chef:
         from auth.auth import log_out_user
         from auth.create_session import session
 
-    
-
         self.user = user
         self.permissions = {
             'See orders': session.restourant.kitchen.display_all_order_status, 
             'Create Dish': self.create_dish, 
             'Prepare Order Item': self.prepare_order_item,
+            'Delete Dish': self.delete_dish,
+            'List Dishes': self.list_dishes
         }
     
 
@@ -35,19 +35,16 @@ class Chef:
         raise ValueError("This user is not a chef")
     
     def get_order_item(self):
-        from auth.auth import get_session
-        session = get_session()
+        from auth.create_session import session
         session.restourant.kitchen.display_all_order_status()
         item_id = input('Which Order Item would you like to mark as finished? >>> ')
 
-    
         return int(item_id)
 
     
 
     def prepare_order_item(self):
-        from auth.auth import get_session
-        session = get_session()
+        from auth.auth import session
         item_id = self.get_order_item()
 
         for order in session.restourant.kitchen.current_orders:
@@ -106,11 +103,21 @@ class Chef:
         prep_method = input('Input prep method>>>> ')
         price = input('Price>>> ')
 
-        new_dish = Dish(name=name, ingredients=ingredients, prep_method=prep_method, price=price)
+        new_dish = Dish(name=name.lower(), ingredients=ingredients, prep_method=prep_method, price=price)
         session.restourant.kitchen.save_dish(new_dish)
         return new_dish
 
 
+    def list_dishes(self):
+        list_data(field='name', title='Registered Dishes', path=DISH_PATH)
+
+        return
 
 
+    def delete_dish(self):
+        self.list_dishes()
+        dish = input('Input dish that you would like to delete')
+        delete_row(identifier=dish, identifier_row='name', path=DISH_PATH)
+        return
     
+
