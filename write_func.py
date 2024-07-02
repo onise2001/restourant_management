@@ -35,8 +35,11 @@ def create_inital_files():
 
             write_inital_files('./restourant/tables.csv', headers, new_tables)
         
-        headers = ['name', 'price', 'current_quantity']
+        headers = ['name', 'price', 'current_quantity', 'timestamp', 'days']
         write_inital_files('./restourant/warehouse.csv', headers, [])
+        
+        headers = ['company_name', 'products']
+        write_inital_files('./restourant/distributors.csv', headers, [])
 
 
         headers = ['debt', 'total_salary', 'salary_percent', 'margin_percent', 'commision_percent','current_balance']

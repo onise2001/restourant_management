@@ -84,3 +84,9 @@ class Warehouse:
         self.add_product(product)
 
     
+    def check_ingredient_in_database(self, ingredient):
+        for row in self.products:
+            if row.name == ingredient:
+                return row.price
+            
+        return None
