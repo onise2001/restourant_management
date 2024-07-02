@@ -32,7 +32,7 @@ class Admin:
         self.kitchen_manager = Chef(user)
         self.waiter_management = Waiter(user)
         self.session = get_session()
-
+        
 
         self.permissions = {
             'User Management': {

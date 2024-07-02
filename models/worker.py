@@ -1,7 +1,7 @@
 from .warehouse import Warehouse
 from datetime import timedelta 
 import datetime
-class WarehouseWorker:
+
 
     def __init__(self,user):
         from auth.create_session import get_session
@@ -16,6 +16,7 @@ class WarehouseWorker:
         for index, product in enumerate(self.session.restourant.warehouse.products):
             if product.timestamp + timedelta(days=int(product.days)) <= datetime.datetime.today().date() or product.current_quantity == '0':
                 self.session.restourant.warehouse.products.pop(index)
+
 
         self.session.restourant.warehouse.write_products()
 

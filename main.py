@@ -59,7 +59,6 @@ def admin_menu_management(permissions):
 
 
 
-
 def menu_management(menu):
     for index, (key, value) in enumerate(menu.items()):
         print(f'{index + 1}. {key}')        

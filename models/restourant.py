@@ -9,7 +9,7 @@ class Restourant:
     def __init__(self):
         self.warehouse = Warehouse()
         self.kitchen = Kitchen()
-#        self.warehouse_worker = WarehouseWorker()
+
         self.distributor = Distributor
         fields = self.read_restourant()
         self.debt = float(fields['debt'])

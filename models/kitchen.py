@@ -3,7 +3,7 @@ import csv
 import os
 from models.dish import Dish
 from models.order_item import OrderItem
-from paths import DISH_PATH, KITCHEN_PATH, ORDER_ITEM_PATH, ORDER_PATH, WAREHOUSE_PATH
+from paths import DISH_PATH, KITCHEN_PATH, ORDER_ITEM_PATH, ORDER_PATH, PENDING_DISHES, WAREHOUSE_PATH
 from .order import Order
 
 
@@ -18,18 +18,18 @@ class Kitchen:
 
 
     def display_all_order_status(self):
-        print(self.current_orders)
         for order in self.current_orders:
-            order.order_status()
+            if order.status != 'Finished':
+                order.order_status()
 
 
     def save_dish(self, dish):
-        with open(file=DISH_PATH, mode='a', encoding='utf-8') as file:
+        with open(file=PENDING_DISHES, mode='a') as file:
             headers = ['name', 'ingredients', 'prep_method', 'price']
-
 
             writer = csv.DictWriter(file, fieldnames=headers)
 
+            print('here')
         
             writer.writerow({
                 'name': dish.name,
@@ -37,7 +37,7 @@ class Kitchen:
                 'prep_method': dish.prep_method,
                 'price': dish.price
             })
-
+            print('here1')
         return dish
     
     def fill_the_kitchen(self):
@@ -61,19 +61,21 @@ class Kitchen:
         with open(file=ORDER_PATH, mode='r') as file:
             reader = csv.DictReader(file)
             for line in reader:
-                old_order = Order(table=line['table'], orderitems=[], waiter=line['waiter'], status=line['status'])
+                old_order = Order(table=line['table'], orderitems=[], waiter=line['waiter'], status=line['status'], payement=line['payment'], price=line['price'])
+                
+                orderitem_ids = [int(orderitem.id) for orderitem in orderitems]
+                saved_orderitems_ids = ast.literal_eval(line['orderitem_ids'])
+
+                common_ids = list(set(orderitem_ids) & set(saved_orderitems_ids))
 
                 # orderitems = orderitem_dict[f'{old_order.table}']
                 # old_order.orderitems = orderitems
+                if old_order.payement == 'Unpaid':
+                    for orderitem in orderitems:
+                        if int(orderitem.id) in common_ids:
+                            old_order.orderitems.append(orderitem)
 
-                for orderitem in orderitems:
-                    if orderitem.order_table == old_order.table:
-                        old_order.orderitems.append(orderitem)
-
-                
-
-
-                self.current_orders.append(old_order)
+                    self.current_orders.append(old_order)
             return
         
   
@@ -99,10 +101,13 @@ class Kitchen:
                         print(ingredient_name, 'Not Enough')
 
         if len(ingredients) == doable_counter:
-            session.restourant.warehouse.write_products()
             return True
         return False
     
+    # Extract ingredients from database if there are enough.
+
+    # If prevoiusly added product amount is not enough, it will be 
+    # accumulated with later added product amounts.
     
     def extract_ingredients(self, ingredient, quantity):
         all_saved_ingredient = []
@@ -125,6 +130,8 @@ class Kitchen:
                 product.current_quantity = 0
         
         return False
-
+    
+   
         
+
 
