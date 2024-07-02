@@ -1,6 +1,6 @@
 from auth.create_session import get_session
-class Accoutant:
 
+class Accoutant:
     def __init__(self, user):
         self.user = user
         self.session = get_session()

@@ -18,9 +18,9 @@ class Kitchen:
 
 
     def display_all_order_status(self):
-        print(self.current_orders)
         for order in self.current_orders:
-            order.order_status()
+            if order.status != 'Finished':
+                order.order_status()
 
 
     def save_dish(self, dish):
@@ -61,24 +61,19 @@ class Kitchen:
         with open(file=ORDER_PATH, mode='r') as file:
             reader = csv.DictReader(file)
             for line in reader:
-                old_order = Order(table=line['table'], orderitems=[], waiter=line['waiter'], status=line['status'])
+                old_order = Order(table=line['table'], orderitems=[], waiter=line['waiter'], status=line['status'], payement=line['payment'])
                 
                 orderitem_ids = [int(orderitem.id) for orderitem in orderitems]
                 saved_orderitems_ids = ast.literal_eval(line['orderitem_ids'])
-                print(orderitem_ids)
 
                 common_ids = list(set(orderitem_ids) & set(saved_orderitems_ids))
-                print(common_ids)
 
                 # orderitems = orderitem_dict[f'{old_order.table}']
                 # old_order.orderitems = orderitems
-                if not old_order.status == 'Finished':
+                if old_order.payement == 'Unpaid':
                     for orderitem in orderitems:
                         if int(orderitem.id) in common_ids:
                             old_order.orderitems.append(orderitem)
-
-                
-
 
                     self.current_orders.append(old_order)
             return
@@ -113,7 +108,6 @@ class Kitchen:
                         print(ingredient_name, 'Not Enough')
 
         if len(ingredients) == doable_counter:
-            session.restourant.warehouse.write_products()
             return True
         return False
     
@@ -140,9 +134,7 @@ class Kitchen:
         
         return False
     
-    def calculate_dish_cost(self, dish):
-        price = dish.price + (dish.price * (self.session.restourant.margin_percent / 100))
-        return price
-
+   
         
+
 

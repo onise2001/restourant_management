@@ -2,7 +2,8 @@ import csv
 from models.dish import Dish
 from models.order_item import OrderItem
 from paths import DISH_PATH, ORDER_ITEM_PATH, ORDER_PATH, PAYMENTS_PATH, TABLES_PATH
-from .order import Order
+from .order_item import STATUS_CHOICE
+from .order import Order, PAYMENT_CHOICES
 from update_func import update_value_in_csv
 
 
@@ -18,7 +19,8 @@ class Waiter:
             'Get Order': self.create_order, 
             'Add Order to Kitchen' : self.create_order,
             'Check Orders': self.check_orders,
-            'Get Payment': self.get_payment
+            'Get Payment': self.get_payment,
+            'Deliver Order': self.deliver_order
             }
     
 
@@ -85,13 +87,11 @@ class Waiter:
         table_id = self.get_table_id()
         waiter = self.user
         pending_order_exists = False
-        existing_orders = []
 
         if dishes and table_id:
             for order in session.restourant.kitchen.current_orders:
-                if int(order.table) == table_id and not order.status == 'Finished':
+                if int(order.table) == table_id and order.payement == PAYMENT_CHOICES[1]:
                     pending_order_exists = True
-                    pending_existing_order = order
                     break
 
 
@@ -106,7 +106,7 @@ class Waiter:
                 order.orderitems = orderitems
                 self.orders.append(order)
                 with open(file=ORDER_PATH, mode='a', encoding='utf-8') as file:
-                    headers = ['table', 'dishes', 'orderitem_ids', 'waiter', 'status']
+                    headers = ['table', 'dishes', 'orderitem_ids', 'waiter', 'status', 'payment']
 
                     writer = csv.DictWriter(file, fieldnames=headers)
 
@@ -115,35 +115,32 @@ class Waiter:
                         'dishes': dishes_names,
                         'orderitem_ids': orderitem_ids,
                         'waiter': waiter.username,
-                        'status': order.status
+                        'status': order.status,
+                        'payment': order.payement,
                     })
-            else:
-                pending_existing_order.orderitems += orderitems
-                pending_existing_order.status = 'Pending'
-                update_value_in_csv(
-                    identifier=order.table, 
-                    identifier_column='table', 
-                    path=ORDER_PATH, 
-                    value='Pending', 
-                    value_column='status'
-                )
+   
 
 
 
-            with open(ORDER_ITEM_PATH, 'a') as file:
-                headers = ['id', 'order', 'dish', 'status']
+                with open(ORDER_ITEM_PATH, 'a') as file:
+                    headers = ['id', 'order', 'dish', 'status']
 
-                writer = csv.DictWriter(file, fieldnames=headers)
-                
-                for order_item in orderitems:
-                    writer.writerow({
-                        'id': order_item.id,
-                        'order': order_item.order_table,
-                        'dish': order_item.dish,
-                        'status': order_item.status
-                    })
+                    writer = csv.DictWriter(file, fieldnames=headers)
+                    
+                    for order_item in orderitems:
+                        writer.writerow({
+                            'id': order_item.id,
+                            'order': order_item.order_table,
+                            'dish': order_item.dish,
+                            'status': order_item.status
+                        })
 
-            return order
+                session.restourant.warehouse.write_products()
+
+                return order
+            
+            print('Order Could not be placed on this Table')
+            return None
         
 
 
@@ -151,9 +148,7 @@ class Waiter:
     def check_orders(self):
         from auth.create_session import session
         orders = session.restourant.kitchen.current_orders
-
         available_orders = []
-
         for order in orders:
             if order.waiter == session.current_user.user.username:
                 for order_item in order.orderitems:
@@ -162,22 +157,56 @@ class Waiter:
 
         print('Available Orders')
         for order in available_orders:
-            print(f'OrderItem: {order.dish}, Order Status: {order.status}, Table Number: {order.order_table}')
+            print(f'Orderitem id: {order.id} OrderItem: {order.dish}, Order Status: {order.status}, Table Number: {order.order_table}')
 
+        return available_orders
+    
+    
+    def deliver_order(self):
+        available_orders = self.check_orders()
+        if available_orders:
+            id = input('Which order item would you like to deliver?')
+            if id.isdigit():
+                for order_item in available_orders:
+                    if order_item.id == id:
+                        order_item.status = STATUS_CHOICE[2]
+                        update_value_in_csv(
+                            path=ORDER_ITEM_PATH, 
+                            identifier=order_item.id, 
+                            identifier_column='id', 
+                            value=order_item.status, 
+                            value_column='status')
+                        return True
+
+            else:
+                print('Not a valid value')
+                return None
+            return None
+    
 
     def get_payment(self):
-        table_id = self.get_table_id()
+        print('Tables That have not yet paid')
 
+        if self.session.restourant.kitchen.current_orders:
+            for order in self.session.restourant.kitchen.current_orders:
+                if order.payement == 'Unpaid' and order.waiter == self.session.current_user.username:
+                    print(order.table)
+        
+        else:
+            print('No tables')
+            return
+
+
+
+        table_id = self.get_table_id()
         table_order = None
 
+
         for order in self.session.restourant.kitchen.current_orders:
-            if int(order.id) == table_id:
+            if int(order.table) == table_id and order.payement == PAYMENT_CHOICES[1] and order.status == 'Finished':
                 table_order = order
                 break
-
-
         
-
         if table_order:
             orderitems = table_order.orderitems
 
@@ -185,24 +214,46 @@ class Waiter:
             dishes_names = [orderitem.dish for orderitem in orderitems]
             dishes = []
 
-            with open(DISH_PATH, 'r') as file:
-                reader = csv.DictReader(file)
-                for row in reader:
-                    if row['dish'] in dishes_names:
-                    
-                        dishes.append(Dish(**row))
 
-            
             sum = 0
 
+            for dish_name in dishes_names:
+                with open(DISH_PATH, 'r') as file:
+                    reader = csv.DictReader(file)
+                    for row in reader:
+                        if row['name'] == dish_name:
+                            dishes.append(Dish(**row))
+
             for dish in dishes:
-                sum += self.session.restourant.kitchen.calculate_dish_cost(dish)
+                sum += self.calculate_dish_cost(dish)
 
 
             with open(PAYMENTS_PATH, 'a') as file:
-                writer = csv.DictWriter(file, reader.fieldnames)
+                writer = csv.DictWriter(file, fieldnames=['amount'])
                 writer.writerow({'amount': sum})
+            table_order.payement = PAYMENT_CHOICES[0]
+
+
+            rows = []
+            with open(ORDER_PATH, 'r') as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    print(row['table'], (row['payment']))
+                    if int(row['table']) == table_id and row['payment'] == PAYMENT_CHOICES[1]:
+                        row['payment'] = PAYMENT_CHOICES[0]
+                    rows.append(row)
+
+            with open(ORDER_PATH, 'w', newline='') as file:
+                fieldnames = rows[0].keys()
+                writer = csv.DictWriter(file, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(rows)
+
 
             return sum
         print('No order found')
         return None
+    
+    def calculate_dish_cost(self, dish):
+        price = float(dish.price) + (float(dish.price) * (float(self.session.restourant.margin_percent) / 100))
+        return price
