@@ -156,8 +156,9 @@ class Waiter:
                     if order_item.status == 'Done':
                         available_orders.append(order_item)
 
+        print('Available Orders')
         for order in available_orders:
-            print(order.dish, order.status)
+            print(f'OrderItem: {order.dish}, Order Status: {order.status}, Table Number: {order.order_table}')
 
 
     

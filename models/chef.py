@@ -51,7 +51,7 @@ class Chef:
 
         for order in session.restourant.kitchen.current_orders:
             for order_item in order.orderitems:
-                if order_item.id == item_id:
+                if int(order_item.id) == item_id:
                     order_item.status = 'Done'
                 
 
