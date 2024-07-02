@@ -84,7 +84,7 @@ class Chef:
         print('When you are done, please input 1 ')
         
 
-        print('herere')
+        
         ingredients, price = self.gather_ingredient_info()
 
         price += (float(price) / 100) * float(self.session.restourant.margin_percent)
@@ -160,7 +160,7 @@ class Chef:
                     print('Input ingredients that you would like to add')
                     print('Input 1 to terminate the process')
                     edit_values = self.gather_ingredient_info()
-                    edit_value = dish.ingredients + edit_values
+                    edit_value = dish.ingredients + edit_values[0]
 
                 elif ingredient_choice == '2':
                     [print(ingredient) for ingredient in dish.ingredients]
@@ -217,7 +217,7 @@ class Chef:
                 
                 ingredient_data = {f'{ingredient}': amount}
                 ingredients.append(ingredient_data)
-                price += float(ingredient_price)
+                price += float(ingredient_price) * float(amount)
             
             elif ingredient == "1":
                 break
