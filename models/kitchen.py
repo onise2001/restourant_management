@@ -24,12 +24,12 @@ class Kitchen:
 
 
     def save_dish(self, dish):
-        with open(file=PENDING_DISHES, mode='a', encoding='utf-8') as file:
+        with open(file=PENDING_DISHES, mode='a') as file:
             headers = ['name', 'ingredients', 'prep_method', 'price']
-
 
             writer = csv.DictWriter(file, fieldnames=headers)
 
+            print('here')
         
             writer.writerow({
                 'name': dish.name,
@@ -37,7 +37,7 @@ class Kitchen:
                 'prep_method': dish.prep_method,
                 'price': dish.price
             })
-
+            print('here1')
         return dish
     
     def fill_the_kitchen(self):

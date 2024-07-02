@@ -74,25 +74,23 @@ class Chef:
 
     def create_dish(self):
 
-        from auth.create_session import session
 
-        name = input('Dish Name>>> ')
+        name = input('Dish Name>>> ').lower().strip()
 
         print('Please Input Ingredients>>> ')
         print('When you are done, please input 1 ')
         
 
- 
+        print('herere')
         ingredients, price = self.gather_ingredient_info()
 
-        price += (price / 100) * self.session.restourant.margin_percent
+        price += (float(price) / 100) * float(self.session.restourant.margin_percent)
 
-
+        print('rere')
         prep_method = input('Input prep method>>>> ')
 
-
-        new_dish = Dish(name=name.lower(), ingredients=ingredients, prep_method=prep_method, price=price)
-        session.restourant.kitchen.save_dish(new_dish)
+        new_dish = Dish(name=name.lower(), ingredients=ast.literal_eval(ingredients), prep_method=prep_method, price=price)
+        self.session.restourant.kitchen.save_dish(new_dish)
         return new_dish
 
 
@@ -104,7 +102,7 @@ class Chef:
 
     def delete_dish(self):
         self.list_dishes()
-        dish = input('Input dish that you would like to delete')
+        dish = input('Input dish that you would like to delete').lower().strip()
         delete_row(identifier=dish, identifier_row='name', path=DISH_PATH)
         return
     
@@ -207,9 +205,9 @@ class Chef:
         while True: 
             ingredient = input('ingredient>>> ')
             
-            if ingredient.isalpha() and session.restourant.kitchen.check_ingredient_in_database(ingredient=ingredient) != None:
+            if ingredient.isalpha() and session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient) != None:
                 
-                ingredient_price = session.restourant.kitchen.check_ingredient_in_database(ingredient=ingredient).price
+                ingredient_price = session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient).price
                 amount = input('amount>>>')
                 ingredient_data = {f'{ingredient}': amount}
                 ingredients.append(ingredient_data)

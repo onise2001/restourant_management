@@ -52,10 +52,7 @@ def main():
 
 
                 try:
-
-
                     session.current_user.permissions[list(session.current_user.permissions.keys())[int(choice) - 1]]()
-
                 except ValueError:
                     continue
 

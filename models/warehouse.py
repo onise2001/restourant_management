@@ -86,7 +86,6 @@ class Warehouse:
     
     def check_ingredient_in_database(self, ingredient):
         for product in self.products:
-            if product.name == ingredient and product.timestamp + timedelta(days=product.days) > datetime.datetime.today() and product.current_quantity == 0:
+            if product.name == ingredient and product.timestamp + timedelta(days=int(product.days)) < datetime.today().date() and product.current_quantity == 0:
                 return product
-            
         return None

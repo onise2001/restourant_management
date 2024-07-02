@@ -212,7 +212,6 @@ class Waiter:
             print('No tables')
             return
         
-
         table_id = self.get_table_id()
         table_order = None
 
