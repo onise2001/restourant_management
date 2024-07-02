@@ -2,22 +2,17 @@
 import os
 from write_func import create_inital_files
 from auth.auth import  authenticate_user, log_out_user
-from auth.create_session import get_session
-
-
-
-
-
+from auth.create_session import session
 
 
 def main():
     while True:
         if not os.path.isdir('./restourant'):
-                create_inital_files()
+            create_inital_files()
 
             
         else:
-            session = get_session()
+            
             if not session.current_user:
                 print('please login')
                 username = input("Username: ")
@@ -29,7 +24,6 @@ def main():
             if user:
                 logout = {'Log Out': log_out_user}
                 session.current_user.permissions.update(logout)
-                session.restourant.kitchen.fill_the_kitchen()
                 
                 # print(session.current_user.permissions)
                 print('*' * 20)

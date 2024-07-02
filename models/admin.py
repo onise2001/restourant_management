@@ -2,7 +2,8 @@ from models.user import User
 from paths import USERS_PATH
 import csv
 from .product import Product
-
+from utils import list_data, delete_row
+import ast
 
 # def input_password():
 #     password = input("Passwrod: ").strip().lower()
@@ -41,21 +42,22 @@ class Admin:
 
 
     def list_users(self):
-        field_to_extract = ['username']
-        with open(USERS_PATH, mode='r') as file:
-            reader = csv.DictReader(file)
+        # field_to_extract = ['username']
+        # with open(USERS_PATH, mode='r') as file:
+        #     reader = csv.DictReader(file)
 
-            extracted_data = []
-            for row in reader:
-                extracted_row = {field: row[field] for field in field_to_extract}
-                extracted_data.append(extracted_row)
+        #     extracted_data = []
+        #     for row in reader:
+        #         extracted_row = {field: row[field] for field in field_to_extract}
+        #         extracted_data.append(extracted_row)
 
 
-        print('Registered Users')
-        for data in extracted_data:
-            for key, username in data.items():
-                print(username)
+        # print('Registered Users')
+        # for data in extracted_data:
+        #     for key, username in data.items():
+        #         print(username)
 
+        list_data(field='username', title='Registered Users', path=USERS_PATH)
         return
     
 
@@ -64,6 +66,7 @@ class Admin:
         self.list_users()
         username = input('Which user would you like to edit? input username >>>> ')
         user_found = False
+
         with open(USERS_PATH, mode='r') as infile:
             reader = csv.DictReader(infile)
 
@@ -99,7 +102,7 @@ class Admin:
 
             if field[1](edit_value):
 
-                deleted = self.delete_user_from_database(username=user.username)
+                deleted = delete_row(identifier=username, identifier_row='username', path=USERS_PATH)
                 setattr(user, choice, edit_value)
 
                 with open(USERS_PATH, 'a') as file:
@@ -113,7 +116,6 @@ class Admin:
                     })
 
 
-
                 print(f'{field} Changed to {edit_value}')
                 return True
             else:
@@ -121,39 +123,14 @@ class Admin:
 
 
 
-            
-
-    def delete_user_from_database(self, username):
-        rows = []
-        user_deleted = False
-        with open(USERS_PATH, mode='r') as file:
-            reader = csv.DictReader(file)
-
-            for row in reader:
-                if not row['username'] == username.lower().strip():
-                    rows.append(row)
-                else:
-                    user_deleted = True
-
-
-
-
-        with open(USERS_PATH, mode='w', newline='') as outfile:
-            writer = csv.DictWriter(outfile, fieldnames=reader.fieldnames)
-            writer.writeheader()
-            writer.writerows(rows)
-
-        if user_deleted:
-            print(f'User {username} deleted')
-            return True
-       
-        print(f'User {username} not found')
-        return False
+    # def delete_user_from_database(self, username):
+    #     delete_row(path=USERS_PATH, identifier_row='username', identifier=username)
+    #     return
 
     def delete_user(self):
         self.list_users()
         username = input('Which user would you like to delete? input username >>>>')
-        self.delete_user_from_database(username)
+        delete_row(identifier=username, identifier_row='username', path=USERS_PATH)
        
 
 

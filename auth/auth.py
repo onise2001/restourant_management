@@ -1,8 +1,10 @@
+from models.kitchen import Kitchen
 from models.user import User
+from models.warehouse import Warehouse
 from paths import USERS_PATH
 import bcrypt
 import csv
-from .create_session import get_session
+from .create_session import session
 
 
 
@@ -41,7 +43,9 @@ def authenticate_user(username, password):
         if bcrypt.checkpw(password, saved_password):
             logged_in_user = User(**user)
             print(isinstance(logged_in_user, User))
-            get_session().current_user = logged_in_user
+            session.current_user = logged_in_user
+            session.restourant.kitchen.fill_the_kitchen()
+
             return logged_in_user
         else:
             print('WRONG CREDENTIALS')
@@ -51,8 +55,8 @@ def authenticate_user(username, password):
 
 def log_out_user():
     print('here')
-    get_session().current_user = None
-    print(get_session().current_user)
+    session.current_user = None
+    print(session.current_user)
 
 
     
