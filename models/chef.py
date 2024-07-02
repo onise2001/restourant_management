@@ -203,16 +203,15 @@ class Chef:
 
 
     def gather_ingredient_info(self):
-        from auth.create_session import session
         ingredients = []
         price = 0
         while True: 
             ingredient = input('ingredient>>> ')
 
             
-            if ingredient.isalpha() and session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient) != None:
+            if ingredient.isalpha() and self.session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient) != None:
                 
-                ingredient_price = session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient).price
+                ingredient_price = self.session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient).price
 
                 amount = input('amount>>>')
                 
@@ -232,6 +231,9 @@ class Chef:
                 
                 else:
                     continue
+
+            
+        price += price / 100 * self.session.restourant.margin_percent
 
 
 

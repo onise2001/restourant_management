@@ -4,4 +4,3 @@ def get_session():
     session = Session()
     return session
 
-
