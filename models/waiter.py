@@ -2,6 +2,7 @@ import csv
 from models.order_item import OrderItem
 from paths import DISH_PATH, ORDER_ITEM_PATH, ORDER_PATH, TABLES_PATH
 from .order import Order
+from update_func import update_value_in_csv
 
 
 
@@ -24,28 +25,29 @@ class Waiter:
     
     def get_dish_names(self):
         from models.dish import Dish
-        from auth.auth import session
+        from auth.create_session import session
         dishes = []
 
         while True:
             dish_name = input('Dish Name>>>')
             print('When you finish input 1')
             
-
+            dish_found = False
             if dish_name == '1':
                 break
-            with open(file=DISH_PATH, mode='r', encoding='utf-8') as file:
+            with open(file=DISH_PATH, mode='r') as file:
                 reader = csv.DictReader(file)
                 for row in reader:
                     if row['name'] == dish_name:
-                        if session.kitchen.check_if_enough_ingredients(dish=dish_name):
+                        dish_found = True
+                        if session.restourant.kitchen.check_if_enough_ingredients(dish=dish_name):
                             dish = Dish(**row)
                             dishes.append(dish)
                         else:
                             print('Not Enough Ingredients For the Dish')
-                    else:
-                        print('Not a Valid Dish')
-
+                  
+                if not dish_found:
+                    print('Not a valid Dish')
         return dishes
 
     def get_table_id(self):
@@ -74,48 +76,68 @@ class Waiter:
     
 
     def create_order(self):
-        from auth.auth import session
+        from auth.create_session import session
         dishes = self.get_dish_names()
         table_id = self.get_table_id()
         waiter = self.user
+        order_exists = False
+        existing_order = None
 
         if dishes and table_id:
+            for order in session.restourant.kitchen.current_orders:
+                if int(order.table) == table_id:
+                    order_exists = True
+                    existing_order = order
+                    break
+
+
             orderitems = []
             dishes_names = [dish.name for dish in dishes]
 
-            order = Order(table=table_id, orderitems=[], waiter=waiter)
             orderitems = [OrderItem(dish=dish, order_table=order.table) for dish in dishes_names]
   
-            order.orderitems = orderitems
-            self.orders.append(order)
 
            
+            if not order_exists:
+                order = Order(table=table_id, orderitems=[], waiter=waiter)
+                order.orderitems = orderitems
+                self.orders.append(order)
+                with open(file=ORDER_PATH, mode='a', encoding='utf-8') as file:
+                    headers = ['table', 'dishes', 'waiter', 'status']
 
-            with open(file=ORDER_PATH, mode='a', encoding='utf-8') as file:
-                headers = ['table', 'dishes', 'waiter', 'status']
+                    writer = csv.DictWriter(file, fieldnames=headers)
+
+                    writer.writerow({
+                        'table': table_id,
+                        'dishes': dishes_names,
+                        'waiter': waiter.username,
+                        'status': order.status
+                    })
+            else:
+                existing_order.orderitems += orderitems
+                existing_order.status = 'Pending'
+                update_value_in_csv(
+                    identifier=order.table, 
+                    identifier_column='table', 
+                    path=ORDER_PATH, 
+                    value='Pending', 
+                    value_column='status'
+                )
+
+
+
+            with open(ORDER_ITEM_PATH, 'a') as file:
+                headers = ['id', 'order', 'dish', 'status']
 
                 writer = csv.DictWriter(file, fieldnames=headers)
-
-                writer.writerow({
-                    'table': table_id,
-                    'dishes': dishes_names,
-                    'waiter': waiter.username,
-                    'status': order.status
-                })
-
-
-        with open(ORDER_ITEM_PATH, 'a') as file:
-            headers = ['id', 'order', 'dish', 'status']
-
-            writer = csv.DictWriter(file, fieldnames=headers)
-            
-            for order_item in orderitems:
-                writer.writerow({
-                    'id': order_item.id,
-                    'order': order_item.order_table,
-                    'dish': order_item.dish,
-                    'status': order_item.status
-                })
+                
+                for order_item in orderitems:
+                    writer.writerow({
+                        'id': order_item.id,
+                        'order': order_item.order_table,
+                        'dish': order_item.dish,
+                        'status': order_item.status
+                    })
 
             return order
         
@@ -123,8 +145,8 @@ class Waiter:
 
     
     def check_orders(self):
-        from auth.auth import session
-        orders = session.kitchen.current_orders
+        from auth.create_session import session
+        orders = session.restourant.kitchen.current_orders
 
         available_orders = []
 

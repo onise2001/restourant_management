@@ -5,11 +5,6 @@ from auth.auth import  authenticate_user, log_out_user
 from auth.create_session import session
 
 
-
-
-
-
-
 def main():
     while True:
         if not os.path.isdir('./restourant'):
@@ -29,7 +24,6 @@ def main():
             if user:
                 logout = {'Log Out': log_out_user}
                 session.current_user.permissions.update(logout)
-                session.restourant.kitchen.fill_the_kitchen()
                 
                 # print(session.current_user.permissions)
                 print('*' * 20)

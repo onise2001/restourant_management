@@ -1,4 +1,6 @@
+from models.kitchen import Kitchen
 from models.user import User
+from models.warehouse import Warehouse
 from paths import USERS_PATH
 import bcrypt
 import csv
@@ -42,6 +44,8 @@ def authenticate_user(username, password):
             logged_in_user = User(**user)
             print(isinstance(logged_in_user, User))
             session.current_user = logged_in_user
+            session.restourant.kitchen.fill_the_kitchen()
+
             return logged_in_user
         else:
             print('WRONG CREDENTIALS')
