@@ -9,13 +9,15 @@ from utils import list_data, delete_row
 class Chef:
 
     def __init__(self, user):
-        from auth.create_session import session
+        from auth.auth import log_out_user
+
+        from auth.create_session import get_session
 
         self.user = user
-        self.session = session
-        self.permissions = {
-            'See orders': session.restourant.kitchen.display_all_order_status, 
+        self.session = get_session()
 
+        self.permissions = {
+            'See orders': self.session.restourant.kitchen.display_all_order_status, 
             'Create Dish': self.create_dish, 
             'Prepare Order Item': self.prepare_order_item,
             'Delete Dish': self.delete_dish,
@@ -32,7 +34,7 @@ class Chef:
     @user.setter
     def user(self, user):
         print(user.role)
-        if user.role == "Chef":
+        if user.role == "Chef" or user.role == 'Admin':
             self._user = user
             return
         
@@ -41,7 +43,7 @@ class Chef:
     def get_order_item(self):
 
         from auth.create_session import session
-        session.restourant.kitchen.display_all_order_status()
+        self.session.restourant.kitchen.display_all_order_status()
 
         item_id = input('Which Order Item would you like to mark as finished? >>> ')
 
@@ -53,6 +55,7 @@ class Chef:
         item_id = self.get_order_item()
 
         for order in self.session.restourant.kitchen.current_orders:
+
             for order_item in order.orderitems:
                 if int(order_item.id) == item_id:
                     order_item.status = 'Done'
@@ -205,10 +208,12 @@ class Chef:
         price = 0
         while True: 
             ingredient = input('ingredient>>> ')
+
             
             if ingredient.isalpha() and session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient) != None:
                 
                 ingredient_price = session.restourant.warehouse.check_ingredient_in_database(ingredient=ingredient).price
+
                 amount = input('amount>>>')
                 
                 ingredient_data = {f'{ingredient}': amount}
@@ -227,6 +232,7 @@ class Chef:
                 
                 else:
                     continue
+
 
 
         return ingredients, price

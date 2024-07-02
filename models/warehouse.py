@@ -64,7 +64,6 @@ class Warehouse:
 
     
     def write_products(self):
-
     
         with open('restourant/warehouse.csv', mode='w') as file:
             writer = csv.DictWriter(f=file,fieldnames=['name', 'price', 'current_quantity', 'timestamp', 'days'])
