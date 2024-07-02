@@ -56,7 +56,7 @@ class Admin:
         
         return None
 
-   def add_product_to_warehouse(self):
+    def add_product_to_warehouse(self):
         name = input('Name: ')
         price = input('Price per unit: ')
         quantity = input("Quantity: ")

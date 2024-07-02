@@ -81,6 +81,12 @@ class Warehouse:
         days = input("Days to save: ")
 
         product = Product(name=name, price=price, current_quantity=quantity, days=days)
-        session.warehouse.add_product(product)
+        self.add_product(product)
 
     
+    def check_ingredient_in_database(self, ingredient):
+        for row in self.products:
+            if row.name == ingredient:
+                return row.price
+            
+        return None
