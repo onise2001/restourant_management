@@ -1,3 +1,4 @@
+import ast
 import csv
 from paths import DISH_PATH, ORDER_ITEM_PATH
 from .dish import Dish
@@ -16,7 +17,8 @@ class Chef:
             'Create Dish': self.create_dish, 
             'Prepare Order Item': self.prepare_order_item,
             'Delete Dish': self.delete_dish,
-            'List Dishes': self.list_dishes
+            'List Dishes': self.list_dishes,
+            'Update Dish': self.update_dish
         }
     
 
@@ -68,10 +70,8 @@ class Chef:
     
 
     def create_dish(self):
-        # TODO if no product, ask chef to create it and also specify the price
         from auth.create_session import session
 
-        ingredients = []
 
         name = input('Dish Name>>> ')
 
@@ -79,25 +79,8 @@ class Chef:
         print('When you are done, please input 1 ')
         
 
-        while True: 
-            ingredient = input('ingredient>>> ')
-            if ingredient.isalpha() and session.restourant.kitchen.check_ingredient_in_database(ingredient=ingredient):
-                amount = input('amount>>>')
-                ingredient_data = {f'{ingredient}': amount}
-                ingredients.append(ingredient_data)
-            
-            elif ingredient == "1":
-                break
-
-            else:
-                answer = input('Would you like to add ingredient to the database? y/n>>> ')
-
-                if answer.lower().strip() == 'y' or 'yes':
-                    session.restourant.warehouse.add_ingredient_to_warehouse()
-                
-                else:
-                    continue
-
+ 
+        ingredients = self.gather_ingredient_info()
 
 
         prep_method = input('Input prep method>>>> ')
@@ -121,3 +104,119 @@ class Chef:
         return
     
 
+    def update_dish(self):
+        self.list_dishes()
+
+        dish = input('Which dish would you like update?')
+
+        dish_found = False
+        with open(DISH_PATH, mode='r') as infile:
+            reader = csv.DictReader(infile)
+
+            for row in reader:
+                if row['name'] == dish.lower().strip():
+                    row['ingredients'] = ast.literal_eval(row['ingredients'])
+
+                    dish = Dish(**row)
+                    dish_found = True
+                    
+
+        if dish_found:
+
+            headers = {
+                'ingredients': dish.ingredients,
+                'name': dish.name,
+                'prep_method': dish.prep_method,
+                'price': dish.price 
+            }
+
+
+            for field, value in headers.items():
+                print(field, value)
+
+
+            choice = input('What would you like to edit? Choose from fields:')
+            
+
+            if not choice in headers:
+                print('invalid choice')
+                return None
+            
+
+            if choice == 'ingredients':
+                print('1. Add')
+                print('2. Remove')
+                ingredient_choice = input('Would you like to add or remove ingredients?')
+
+                if ingredient_choice == '1':
+
+                    print('Input ingredients that you would like to add')
+                    print('Input 1 to terminate the process')
+                    edit_values = self.gather_ingredient_info()
+                    edit_value = dish.ingredients + edit_values
+
+                elif ingredient_choice == '2':
+                    [print(ingredient) for ingredient in dish.ingredients]
+                    ingredient_input = input('Which ingredient would you like to remove?')
+                    
+                    for ingredient_data in dish.ingredients:
+
+                        if ingredient_input in ingredient_data:
+                            dish.ingredients.remove(ingredient_data)
+                            break
+                    
+                        
+                    edit_value = dish.ingredients
+
+                    
+
+            else:   
+                edit_value = input(f'New value for {choice} field')
+
+
+            field = headers[choice]
+
+
+            deleted = delete_row(identifier=dish.name, identifier_row='name', path=DISH_PATH)
+            setattr(dish, choice, edit_value)
+
+            with open(DISH_PATH, 'a') as file:
+                writer = csv.DictWriter(f=file, fieldnames=['name', 'ingredients', 'prep_method', 'price'])
+                print(writer)
+                writer.writerow({
+                    'name': dish.name,
+                    'ingredients': dish.ingredients,
+                    'prep_method': dish.prep_method,
+                    'price': dish.price,
+                })
+
+
+            print(f'{field} Changed to {edit_value}')
+            return True
+
+
+    def gather_ingredient_info(self):
+        from auth.create_session import session
+        ingredients = []
+
+        while True: 
+            ingredient = input('ingredient>>> ')
+            if ingredient.isalpha() and session.restourant.kitchen.check_ingredient_in_database(ingredient=ingredient):
+                amount = input('amount>>>')
+                ingredient_data = {f'{ingredient}': amount}
+                ingredients.append(ingredient_data)
+            
+            elif ingredient == "1":
+                break
+
+            else:
+                answer = input('Would you like to add ingredient to the database? y/n>>> ')
+
+                if answer.lower().strip() == 'y' or 'yes':
+                    session.restourant.warehouse.add_ingredient_to_warehouse()
+                
+                else:
+                    continue
+
+
+        return ingredients

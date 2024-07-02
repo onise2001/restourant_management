@@ -3,7 +3,7 @@ from paths import USERS_PATH
 import csv
 from .product import Product
 from utils import list_data, delete_row
-
+import ast
 
 # def input_password():
 #     password = input("Passwrod: ").strip().lower()
@@ -66,6 +66,7 @@ class Admin:
         self.list_users()
         username = input('Which user would you like to edit? input username >>>> ')
         user_found = False
+
         with open(USERS_PATH, mode='r') as infile:
             reader = csv.DictReader(infile)
 
@@ -101,7 +102,7 @@ class Admin:
 
             if field[1](edit_value):
 
-                deleted = self.delete_user_from_database(username=user.username)
+                deleted = delete_row(identifier=username, identifier_row='username', path=USERS_PATH)
                 setattr(user, choice, edit_value)
 
                 with open(USERS_PATH, 'a') as file:
